@@ -1,25 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import Saidnav from "./components/saidnav/saidnav";
+import MaincontentWapper from "./components/mainContent/maincontentWapper";
+import styled from "styled-components";
+const AppWapper = styled.div`
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-auto-rows: auto;
+`;
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppWapper>
+      <Saidnav />
+      <MaincontentWapper />
+    </AppWapper>
   );
 }
 
