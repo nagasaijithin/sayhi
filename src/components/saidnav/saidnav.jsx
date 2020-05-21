@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "../../svg/Logo.svg";
 
-import Userloginlist from "./userloginlist";
+import NavLinks from "./navlinks";
 
 const SaidnavWapper = styled.div`
   & > div {
@@ -26,7 +26,7 @@ const Saidnav = () => {
         <ImageWapper>
           <img src={Logo} alt="Logo" />
         </ImageWapper>
-        <Userloginlist />
+        <NavLinks />
       </div>
     </SaidnavWapper>
   );

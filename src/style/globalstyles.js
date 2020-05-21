@@ -4,6 +4,9 @@ const GlobalStyle = createGlobalStyle`
 :root {
     --mainColor: ${(props) => props.theme.color.main};
     --secondColor: ${(props) => props.theme.color.second};
+    --innerShadow: ${(props) => props.theme.shadow.innerShadow};
+    --mainborderRadius: ${(props) => props.theme.borderRadius};
+    --mainTextColor: black;
 }
 html{
     font-size: 65.2%;
@@ -18,9 +21,7 @@ html{
     box-sizing: border-box;
 }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    font-family: 'Manrope', sans-serif;
   }
 `;
 export default GlobalStyle;

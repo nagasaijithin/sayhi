@@ -6,12 +6,15 @@ import * as serviceWorker from "./serviceWorker";
 import { ThemeProvider } from "styled-components";
 import theme from "./style/theme";
 import GlobalStyle from "./style/globalstyles";
-
+import { Router } from "react-router-dom";
+import history from "./history";
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <GlobalStyle />
-    <App />
-  </ThemeProvider>,
+  <Router history={history}>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <App />
+    </ThemeProvider>
+  </Router>,
   document.getElementById("root")
 );
 
