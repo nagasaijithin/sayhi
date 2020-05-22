@@ -21,6 +21,7 @@ const allRountes = [
   { path: "/profile/:id", component: Profile },
   { path: "/notifications", component: Notifications },
   { path: "/messages", component: Messages },
+  { path: "/messages/:uid", component: Messages },
   { path: "/logout", component: Logout },
   { path: "/post/:id", component: Post },
 ];

@@ -1,11 +1,22 @@
 import React from "react";
 import styled from "styled-components";
-import { MainButton, CardsWapper, CardContiner } from "../style/ui/components";
+import {
+  MainButton,
+  MainLink,
+  CardsWapper,
+  CardContiner,
+} from "../style/ui/components";
 import simple from "../assets/simple.jpg";
 import Textpost from "../components/postcontiner/textpost";
 import Postwithimage from "../components/postcontiner/postwithimage";
 import Createapost from "../components/postcontiner/createapost";
 const ButtonWapper = styled(MainButton)`
+  padding: 0.5rem 2rem;
+  font-size: 2rem;
+  border-radius: var(--mainborderRadius);
+  cursor: pointer;
+`;
+const LinkWapper = styled(MainLink)`
   padding: 0.5rem 2rem;
   font-size: 2rem;
   border-radius: var(--mainborderRadius);
@@ -66,7 +77,7 @@ const Profile = () => {
           </p>
           <div>
             <ButtonWapper>Follow</ButtonWapper>
-            <ButtonWapper>Message</ButtonWapper>
+            <LinkWapper to="/messages/092">Message</LinkWapper>
             <ButtonWapper>Edite you'r info</ButtonWapper>
           </div>
         </div>

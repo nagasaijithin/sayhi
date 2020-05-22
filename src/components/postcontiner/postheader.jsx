@@ -22,17 +22,18 @@ const PersonWapper = styled.div`
   & > div > span {
     color: var(--secondColor);
     padding: 0 1rem;
+    font-size: 1.2rem;
   }
 `;
-const Postheader = ({ timeshow }) => {
+const Postheader = ({ timeshow, message, path }) => {
   return (
     <PersonWapper>
-      <div className="img"></div>
+      <Link to={path ? path : "/profile/098"} className="img"></Link>
       <div>
-        <Link to="/profile/098">
+        <Link to={path ? path : "/profile/098"}>
           <h2>Nagasai jithin</h2>
         </Link>
-        {timeshow ? null : <span>today 3:00pm</span>}
+        {timeshow ? null : <span>{message ? message : "today 3:00pm"}</span>}
       </div>
     </PersonWapper>
   );
