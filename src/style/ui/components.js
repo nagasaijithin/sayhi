@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+// import { Link } from "react-router-dom";
 export const Card = styled.div`
   background: white;
   padding: 1rem 2rem;
@@ -7,7 +7,11 @@ export const Card = styled.div`
   border-radius: var(--mainborderRadius);
   box-shadow: var(--innerShadow);
 `;
-
+export const MainButton = styled.button`
+  background-color: var(--secondColor);
+  color: var(--mainColor);
+  border: none;
+`;
 export const CardsWapper = styled.div`
   padding: 3rem 2rem;
   display: flex;

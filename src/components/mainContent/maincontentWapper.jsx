@@ -17,12 +17,12 @@ const NavWapper = styled.div`
   border-bottom-right-radius: 0;
   box-shadow: 0px 6px 6px -4px black;
 `;
-const MainFeed = styled.div``;
+// const MainFeed = styled.div``;
 const MaincontentWapper = ({ children }) => {
   return (
     <MainWapper>
       <NavWapper></NavWapper>
-      <MainFeed>{children}</MainFeed>
+      {children}
     </MainWapper>
   );
 };

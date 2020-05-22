@@ -17,8 +17,8 @@ const PostLink = styled(Link)`
 const Textpost = () => {
   return (
     <Card>
+      <Postheader />
       <PostLink to="/post/123">
-        <Postheader />
         <ContentWapper>
           <p>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum,

@@ -18,7 +18,7 @@ const AppWapper = styled.div`
 `;
 const allRountes = [
   { path: "/", component: Home },
-  { path: "/profile", component: Profile },
+  { path: "/profile/:id", component: Profile },
   { path: "/notifications", component: Notifications },
   { path: "/messages", component: Messages },
   { path: "/logout", component: Logout },
@@ -29,11 +29,9 @@ function App() {
     <AppWapper>
       <Saidnav />
       <MaincontentWapper>
-        <div>
-          {allRountes.map((route, i) => (
-            <Route exact {...route} key={i} />
-          ))}
-        </div>
+        {allRountes.map((route, i) => (
+          <Route exact {...route} key={i} />
+        ))}
       </MaincontentWapper>
     </AppWapper>
   );

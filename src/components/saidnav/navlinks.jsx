@@ -72,7 +72,7 @@ const LinkName = styled.span`
 `;
 const Loginlinks = [
   { icon: home, title: "Home", path: "/" },
-  { icon: person, title: "Profile", path: "/profile" },
+  { icon: person, title: "Profile", path: "/profile/098" },
   { icon: notification, title: "Notifications", path: "/notifications" },
   { icon: message, title: "Message", path: "/messages" },
   { icon: logout, title: "Logout", path: "/logout" },
