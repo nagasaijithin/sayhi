@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
 :root {
     --mainColor: ${(props) => props.theme.color.main};
+    --WhiteColor: white;
     --secondColor: ${(props) => props.theme.color.second};
     --innerShadow: ${(props) => props.theme.shadow.innerShadow};
     --mainborderRadius: ${(props) => props.theme.borderRadius};

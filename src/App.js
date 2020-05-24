@@ -10,6 +10,9 @@ import Notifications from "./pages/notifications";
 import Messages from "./pages/messages";
 import Logout from "./pages/logout";
 import Post from "./pages/post";
+import editprofile from "./pages/editprofile";
+import Login from "./pages/login";
+import Signup from "./pages/signup";
 
 const AppWapper = styled.div`
   display: grid;
@@ -22,8 +25,11 @@ const allRountes = [
   { path: "/notifications", component: Notifications },
   { path: "/messages", component: Messages },
   { path: "/messages/:uid", component: Messages },
+  { path: "/editprofile/:uid", component: editprofile },
   { path: "/logout", component: Logout },
   { path: "/post/:id", component: Post },
+  { path: "/login", component: Login },
+  { path: "/Signup", component: Signup },
 ];
 function App() {
   return (

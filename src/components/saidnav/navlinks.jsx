@@ -2,13 +2,13 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 /// all icons link
-import home from "../../svg/home.svg";
-import person from "../../svg/person.svg";
-import notification from "../../svg/notification.svg";
-import message from "../../svg/message.svg";
-import logout from "../../svg/logout.svg";
-// import login from "../../svg/login.svg";
-// import createaccount from "../../svg/createaccount.svg";
+// import home from "../../svg/home.svg";
+// import person from "../../svg/person.svg";
+// import notification from "../../svg/notification.svg";
+// import message from "../../svg/message.svg";
+// import logout from "../../svg/logout.svg";
+import login from "../../svg/login.svg";
+import createaccount from "../../svg/createaccount.svg";
 
 const Spanani = keyframes`
   0%{
@@ -70,27 +70,27 @@ const LinkName = styled.span`
     transform: rotate(136deg);
   }
 `;
-const Loginlinks = [
-  { icon: home, title: "Home", path: "/" },
-  { icon: person, title: "Profile", path: "/profile/098" },
-  { icon: notification, title: "Notifications", path: "/notifications" },
-  { icon: message, title: "Message", path: "/messages" },
-  { icon: logout, title: "Logout", path: "/logout" },
-];
-// const NotloginLinks = [
-//   { icon: login, title: "Login", path: "/login" },
-//   {
-//     icon: createaccount,
-//     title: "Create an Account",
-//     path: "/createnewaccount",
-//   },
+// const Loginlinks = [
+//   { icon: home, title: "Home", path: "/" },
+//   { icon: person, title: "Profile", path: "/profile/098" },
+//   { icon: notification, title: "Notifications", path: "/notifications" },
+//   { icon: message, title: "Message", path: "/messages" },
+//   { icon: logout, title: "Logout", path: "/logout" },
 // ];
+const NotloginLinks = [
+  { icon: login, title: "Login", path: "/login" },
+  {
+    icon: createaccount,
+    title: "Signup",
+    path: "/signup",
+  },
+];
 const NavLinks = () => {
   return (
     <>
       <MainLinksWapper>
         <ul>
-          {Loginlinks.map(({ icon, title, path }, i) => (
+          {NotloginLinks.map(({ icon, title, path }, i) => (
             <li key={i}>
               <Link to={path}>
                 <img src={icon} alt={title} />

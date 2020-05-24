@@ -78,7 +78,7 @@ const Profile = () => {
           <div>
             <ButtonWapper>Follow</ButtonWapper>
             <LinkWapper to="/messages/092">Message</LinkWapper>
-            <ButtonWapper>Edite you'r info</ButtonWapper>
+            <LinkWapper to="/editprofile/092">Edit you'r Profile</LinkWapper>
           </div>
         </div>
       </ProfileContentWapper>

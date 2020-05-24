@@ -8,9 +8,15 @@ export const Card = styled.div`
   box-shadow: var(--innerShadow);
 `;
 export const MainButton = styled.button`
-  background-color: var(--secondColor);
-  color: var(--mainColor);
+  background-color: ${(props) =>
+    props.bgwhite ? "var(--mainColor)" : "var(--secondColor)"};
+  color: ${(props) =>
+    props.bgwhite ? "var(--secondColor)" : "var(--mainColor)"};
   border: none;
+  padding: 1rem;
+  border-radius: var(--mainborderRadius);
+  cursor: pointer;
+  font-size: 2rem;
 `;
 
 export const MainLink = styled(Link)`
@@ -18,6 +24,9 @@ export const MainLink = styled(Link)`
   color: var(--mainColor);
   border: none;
   text-decoration: none;
+  padding: 1rem;
+  border-radius: var(--mainborderRadius);
+  font-size: 2rem;
 `;
 export const CardsWapper = styled.div`
   padding: 3rem 2rem;
