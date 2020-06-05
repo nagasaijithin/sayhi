@@ -33,7 +33,19 @@ export const CardsWapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media ${(props) => props.theme.mediaQuires.mobileLar} {
+    padding: 0;
+  }
 `;
 export const CardContiner = styled.div`
-  width: 30vw;
+  width: 40vw;
+  @media ${(props) => props.theme.mediaQuires.lapLarg} {
+    width: 60vw;
+  }
+  @media ${(props) => props.theme.mediaQuires.lapMid} {
+    width: 70vw;
+  }
+  @media ${(props) => props.theme.mediaQuires.mobileLar} {
+    width: 90vw;
+  }
 `;

@@ -18,6 +18,9 @@ const AppWapper = styled.div`
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-auto-rows: auto;
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
 `;
 const allRountes = [
   { path: "/", component: Home },

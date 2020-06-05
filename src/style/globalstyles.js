@@ -14,6 +14,14 @@ html{
     box-sizing: border-box;
     padding:0;
     margin: 0;
+    @media ${(props) => props.theme.mediaQuires.lapMid} {
+      font-size: 59.2%;
+    }
+    @media ${(props) => props.theme.mediaQuires.mobileSmal} { 
+      font-size: 54.2%;
+
+    }
+    
   }
   *{
     padding: 0;

@@ -20,6 +20,12 @@ const SignupWapper = styled.div`
     padding: 3rem;
     justify-content: space-around;
     margin: 3rem 0;
+    @media ${(props) => props.theme.mediaQuires.lapLarg} {
+      margin: 3rem 0 8rem;
+    }
+    @media ${(props) => props.theme.mediaQuires.lapMid2} {
+      width: 90%;
+    }
 
     & > img {
       width: 40%;

@@ -12,13 +12,13 @@ import Postwithimage from "../components/postcontiner/postwithimage";
 import Createapost from "../components/postcontiner/createapost";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
-  font-size: 2rem;
+  font-size: 1.7rem;
   border-radius: var(--mainborderRadius);
   cursor: pointer;
 `;
 const LinkWapper = styled(MainLink)`
   padding: 0.5rem 2rem;
-  font-size: 2rem;
+  font-size: 1.7rem;
   border-radius: var(--mainborderRadius);
   cursor: pointer;
 `;
@@ -36,9 +36,9 @@ const ProfileContentWapper = styled.div`
       font-size: 3rem;
     }
     & > p {
-      width: 30%;
+      width: 50%;
       text-align: center;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
     }
     & > div {
       display: flex;

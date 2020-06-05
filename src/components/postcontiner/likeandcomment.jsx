@@ -13,7 +13,7 @@ const LikeAndCommentWapper = styled.div`
     display: flex;
     align-items: center;
     & > img {
-      height: 4vh;
+      height: 3rem;
       cursor: pointer;
     }
     & > span {

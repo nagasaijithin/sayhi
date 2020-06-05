@@ -3,7 +3,7 @@ import { MainButton, MainLink } from "../style/ui/components";
 import styled from "styled-components";
 
 const LogoutWapper = styled.div`
-  height: 90%;
+  height: 90vh;
   display: flex;
   align-items: center;
   flex-direction: column;

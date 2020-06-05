@@ -54,7 +54,8 @@ const SideMessageWapper = styled.div`
       border-radius: var(--mainborderRadius);
     }
     & > ul {
-      height: 0vh;
+      height: 69vh;
+
       display: flex;
       flex-direction: column;
       & li:nth-child(even) {

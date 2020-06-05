@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { MainButton } from "../style/ui/components";
 import { Link } from "react-router-dom";
 const LoginWapper = styled.div`
-  height: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +20,13 @@ const LoginWapper = styled.div`
     padding: 3rem;
     justify-content: space-around;
     margin: 3rem 0;
+    @media ${(props) => props.theme.mediaQuires.lapLarg} {
+      margin: 0 0 4rem;
+    }
+    @media ${(props) => props.theme.mediaQuires.lapMid2} {
+      width: 90%;
+    }
+
     & > img {
       width: 40%;
       align-self: center;
