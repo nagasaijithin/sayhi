@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Postheader from "../components/postcontiner/postheader";
 import Inputandbutton from "../components/inputandbutton";
+
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -13,6 +16,10 @@ const MessageWapper = styled.div`
     padding: 1rem;
     height: 90vh;
     overflow-y: scroll;
+    @media ${(props) => props.theme.mediaQuires.messageGrid} {
+      display: ${(props) => (props.changeGrid ? "none" : "unset")};
+      flex: 1;
+    }
     &::-webkit-scrollbar {
       width: 1rem;
     }
@@ -29,13 +36,16 @@ const MessageWapper = styled.div`
   }
   & > .last-element {
     flex: 1;
+    @media ${(props) => props.theme.mediaQuires.messageGrid} {
+      display: ${(props) => (props.changeGrid ? "unset" : "none")};
+    }
   }
 `;
 
 const SideMessageWapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* height: 100%; */
   padding: 1rem;
   & > .message-head {
     padding: 1rem 2rem;
@@ -90,8 +100,14 @@ const StartingInbox = styled.div`
   }
 `;
 const Messages = (props) => {
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
+
+  const mSize = props.match.params.uid ? true : false;
   return (
-    <MessageWapper>
+    <MessageWapper changeGrid={mSize}>
       <div className="first-element">
         <div>
           <Postheader message={"hi"} path="/messages/654" />
@@ -189,4 +205,9 @@ const Messages = (props) => {
   );
 };
 
-export default Messages;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(Messages);

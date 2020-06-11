@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import Postheader from "../components/postcontiner/postheader";
+
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
 const ContentContiner = styled.div`
   display: flex;
   align-items: center;
@@ -16,7 +20,11 @@ const NotificationsWapper = styled.div`
   width: 70%;
   padding: 2rem 0;
 `;
-const Notifications = () => {
+const Notifications = (props) => {
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
   return (
     <NotificationsWapper>
       <ContentContiner>
@@ -42,4 +50,9 @@ const Notifications = () => {
   );
 };
 
-export default Notifications;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(Notifications);

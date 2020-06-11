@@ -18,6 +18,18 @@ export const MainButton = styled.button`
   cursor: pointer;
   font-size: 2rem;
 `;
+export const MainGoogleButton = styled.div`
+  background-color: ${(props) =>
+    props.bgwhite ? "var(--mainColor)" : "var(--secondColor)"};
+  color: ${(props) =>
+    props.bgwhite ? "var(--secondColor)" : "var(--mainColor)"};
+  border: none;
+  padding: 1rem;
+  border-radius: var(--mainborderRadius);
+  cursor: pointer;
+  font-size: 2rem;
+  text-align: center;
+`;
 
 export const MainLink = styled(Link)`
   background-color: var(--secondColor);

@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { MainButton } from "../style/ui/components";
 
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
 const ButtonOnSave = styled(MainButton)`
   padding: 1rem;
   border-radius: var(--mainborderRadius);
@@ -14,9 +17,14 @@ const ContentWapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  @media ${(props) => props.theme.mediaQuires.lapLarg} {
+    flex-direction: column;
+    height: 90vh;
+  }
+
   & > label {
-    width: 15%;
-    height: 30%;
+    width: 20rem;
+    height: 20rem;
     background: var(--WhiteColor);
     border-radius: 50%;
     cursor: pointer;
@@ -58,11 +66,14 @@ const NameBioWapper = styled.div`
     }
   }
 `;
-const Editprofile = () => {
+const Editprofile = (props) => {
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
   return (
     <ContentWapper>
       <label htmlFor="profile">
-        {" "}
         <span>+</span>
       </label>
       <input type="file" id="profile" />
@@ -81,4 +92,9 @@ const Editprofile = () => {
   );
 };
 
-export default Editprofile;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(Editprofile);

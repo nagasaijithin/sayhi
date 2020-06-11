@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import { connect } from "react-redux";
 const MainWapper = styled.div`
   background-color: var(--mainColor);
   border-radius: 3rem;
@@ -9,6 +9,7 @@ const NavWapper = styled.div`
   height: 8vh;
   position: sticky;
   top: 0;
+  z-index: 20;
 
   width: 100%;
   background-color: var(--mainColor);
@@ -17,13 +18,17 @@ const NavWapper = styled.div`
   border-bottom-right-radius: 0;
   box-shadow: 0px 6px 6px -4px black;
 `;
-const MaincontentWapper = ({ children }) => {
+const MaincontentWapper = ({ children, firebase }) => {
   return (
     <MainWapper>
-      <NavWapper></NavWapper>
+      {firebase.auth.uid ? <NavWapper></NavWapper> : null}
       {children}
     </MainWapper>
   );
 };
-
-export default MaincontentWapper;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(MaincontentWapper);

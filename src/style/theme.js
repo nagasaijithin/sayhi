@@ -11,6 +11,7 @@ export default {
     lapLarg: "(max-width: 992px)",
     lapMid: "(max-width: 575px)",
     lapMid2: "(max-width: 724px)",
+    messageGrid: "(max-width: 862px)",
     mobileLar: "(max-width: 470px)",
     mobileSmal: "(max-width: 470px)",
   },

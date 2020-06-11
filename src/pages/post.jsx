@@ -6,6 +6,10 @@ import Postheader from "../components/postcontiner/postheader";
 // import Postwithimage from "../components/postcontiner/postwithimage";
 import Textpost from "../components/postcontiner/textpost";
 import Inputandbutton from "../components/inputandbutton";
+
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
 const CommentWapper = styled.div`
   margin: 2rem;
   & > p {
@@ -23,6 +27,10 @@ const CommentWapper = styled.div`
 `;
 const Post = (props) => {
   // useGetPostId()
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
   return (
     <CardsWapper>
       <CardContiner>
@@ -75,4 +83,9 @@ const Post = (props) => {
   );
 };
 
-export default Post;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(Post);

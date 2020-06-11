@@ -7,9 +7,10 @@ import person from "../../svg/person.svg";
 import notification from "../../svg/notification.svg";
 import message from "../../svg/message.svg";
 import logout from "../../svg/logout.svg";
-// import login from "../../svg/login.svg";
-// import createaccount from "../../svg/createaccount.svg";
+import login from "../../svg/login.svg";
+import createaccount from "../../svg/createaccount.svg";
 
+import { connect } from "react-redux";
 const Spanani = keyframes`
   0%{
     bottom: 5px;
@@ -87,20 +88,23 @@ const Loginlinks = [
   { icon: message, title: "Message", path: "/messages" },
   { icon: logout, title: "Logout", path: "/logout" },
 ];
-// const NotloginLinks = [
-//   { icon: login, title: "Login", path: "/login" },
-//   {
-//     icon: createaccount,
-//     title: "Signup",
-//     path: "/signup",
-//   },
-// ];
-const NavLinks = () => {
+const NotloginLinks = [
+  { icon: login, title: "Login", path: "/login" },
+  {
+    icon: createaccount,
+    title: "Signup",
+    path: "/signup",
+  },
+];
+const NavLinks = (props) => {
+  const uid = props.firebase.auth.uid;
+  const Links = uid ? Loginlinks : NotloginLinks;
+
   return (
     <>
       <MainLinksWapper>
         <ul>
-          {Loginlinks.map(({ icon, title, path }, i) => (
+          {Links.map(({ icon, title, path }, i) => (
             <li key={i}>
               <Link to={path}>
                 <img src={icon} alt={title} />
@@ -113,5 +117,9 @@ const NavLinks = () => {
     </>
   );
 };
-
-export default NavLinks;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(NavLinks);

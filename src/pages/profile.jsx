@@ -10,6 +10,10 @@ import simple from "../assets/simple.jpg";
 import Textpost from "../components/postcontiner/textpost";
 import Postwithimage from "../components/postcontiner/postwithimage";
 import Createapost from "../components/postcontiner/createapost";
+
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
   font-size: 1.7rem;
@@ -44,6 +48,7 @@ const ProfileContentWapper = styled.div`
       display: flex;
       justify-content: space-around;
       width: 100%;
+      flex-wrap: wrap;
     }
   }
 `;
@@ -61,7 +66,11 @@ const UserPostWapper = styled.div`
     font-size: 2.4rem;
   }
 `;
-const Profile = () => {
+const Profile = (props) => {
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
   return (
     <>
       <ProfileContentWapper>
@@ -96,4 +105,9 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps)(Profile);

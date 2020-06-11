@@ -2,6 +2,10 @@ import React from "react";
 import { MainButton, MainLink } from "../style/ui/components";
 import styled from "styled-components";
 
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { UserLogout } from "../store/actions/init";
 const LogoutWapper = styled.div`
   height: 90vh;
   display: flex;
@@ -17,16 +21,27 @@ const LogoutWapper = styled.div`
     width: 50%;
   }
 `;
-const Logout = () => {
+const Logout = (props) => {
+  const uid = props.firebase.auth.uid;
+  if (!uid) {
+    return <Redirect to="/login" />;
+  }
   return (
     <LogoutWapper>
       <h1>Are you sure to Logout...?</h1>
       <div>
-        <MainButton>Yes</MainButton>
+        <MainButton onClick={() => props.UserLogout()}>Yes</MainButton>
         <MainLink to="/">No...</MainLink>
       </div>
     </LogoutWapper>
   );
 };
 
-export default Logout;
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps, {
+  UserLogout,
+})(Logout);

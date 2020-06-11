@@ -1,14 +1,18 @@
 import React from "react";
 import Logo from "../svg/Logo2.svg";
 import styled from "styled-components";
-import { MainButton } from "../style/ui/components";
+import { MainButton, MainGoogleButton } from "../style/ui/components";
 import { Link } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { userLogin } from "../store/actions/init";
+import { Redirect } from "react-router-dom";
 const LoginWapper = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  & > div {
+  & > form {
     background: var(--secondColor);
     width: 50%;
     color: var(--WhiteColor);
@@ -59,31 +63,71 @@ const LoginWapper = styled.div`
     }
   }
 `;
-const Login = () => {
-  return (
-    <LoginWapper>
-      <div>
-        <img src={Logo} alt="" />
-        <div>
-          <label htmlFor="Email">Email</label>
-          <input type="email" id="Email" placeholder="Enter You'r Email" />
-        </div>
-        <div>
-          <label htmlFor="Password">Password</label>
-          <input
-            type="password"
-            id="Password"
-            placeholder="Enter You'r Password"
-          />
-        </div>
-        <MainButton bgwhite={true}>LogIn</MainButton>
-        <MainButton bgwhite={true}>LogIn With Google</MainButton>
-        <span>
-          I don't have an account <Link to="/signup">Create A Account</Link>
-        </span>
-      </div>
-    </LoginWapper>
-  );
-};
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+    };
+  }
+  loginSubmit = (e) => {
+    e.preventDefault();
+    const { email, password } = this.state;
+    if (email !== "" && password !== "") {
+      this.props.userLogin(this.state);
+    }
+  };
+  inputHandler = (e) => {
+    e.persist();
 
-export default Login;
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+  render() {
+    if (this.props.firebase.auth.uid) {
+      return <Redirect to="/" />;
+    }
+    return (
+      <LoginWapper>
+        <form onSubmit={this.loginSubmit}>
+          <img src={Logo} alt="" />
+          <div>
+            <label htmlFor="Email">Email</label>
+            <input
+              type="email"
+              id="Email"
+              name="email"
+              placeholder="Enter You'r Email"
+              onChange={this.inputHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor="Password">Password</label>
+            <input
+              type="password"
+              id="Password"
+              name="password"
+              placeholder="Enter You'r Password"
+              onChange={this.inputHandler}
+            />
+          </div>
+          <MainButton bgwhite={true}>LogIn</MainButton>
+          <MainGoogleButton bgwhite={true}>LogIn With Google</MainGoogleButton>
+          <span>
+            I don't have an account <Link to="/signup">Create A Account</Link>
+          </span>
+        </form>
+      </LoginWapper>
+    );
+  }
+}
+const mapStateToProps = (state) => {
+  return {
+    firebase: state.firebase,
+  };
+};
+export default connect(mapStateToProps, {
+  userLogin,
+})(Login);
