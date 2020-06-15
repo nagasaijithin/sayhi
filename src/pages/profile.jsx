@@ -96,8 +96,13 @@ const Profile = (props) => {
         <CardsWapper>
           <CardContiner>
             <Createapost />
-            <Postwithimage />
-            <Textpost />
+            {props.posts.map((data, i) => {
+              return i > 3 && data.image ? (
+                <Postwithimage key={i} {...data} />
+              ) : (
+                <Textpost key={i} {...data} />
+              );
+            })}
           </CardContiner>
         </CardsWapper>
       </UserPostWapper>
@@ -108,6 +113,7 @@ const Profile = (props) => {
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
+    posts: state.posts.posts,
   };
 };
 export default connect(mapStateToProps)(Profile);

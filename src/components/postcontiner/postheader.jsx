@@ -25,15 +25,15 @@ const PersonWapper = styled.div`
     font-size: 1.2rem;
   }
 `;
-const Postheader = ({ timeshow, message, path }) => {
+const Postheader = ({ timeshow, message, path, date, username }) => {
   return (
     <PersonWapper>
       <Link to={path ? path : "/profile/098"} className="img"></Link>
       <div>
         <Link to={path ? path : "/profile/098"}>
-          <h2>Nagasai jithin</h2>
+          <h2>{username}</h2>
         </Link>
-        {timeshow ? null : <span>{message ? message : "today 3:00pm"}</span>}
+        {timeshow ? null : <span>{message ? message : date}</span>}
       </div>
     </PersonWapper>
   );

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Card } from "../../style/ui/components";
+import { connect } from "react-redux";
+import { addPost } from "../../store/actions/posts";
 const CreatePostWapper = styled(Card)`
   display: flex;
   flex-direction: column;
@@ -23,7 +25,7 @@ const PersonWapper = styled.div`
   }
 `;
 
-const FormWapper = styled.div`
+const FormWapper = styled.form`
   display: flex;
   flex-direction: column;
   & > input {
@@ -57,18 +59,47 @@ const FormWapper = styled.div`
     border-radius: var(--mainborderRadius);
   }
 `;
-const Createapost = () => {
+const Createapost = (props) => {
+  const [imageVal, setimageVal] = useState(false);
+  const [textVal, settextVal] = useState("");
+  const formHandler = (e) => {
+    e.preventDefault();
+    e.persist();
+    if (e.target.postText.value !== "") {
+      props.addPost(e.target.postText.value, e.target.postImage.value);
+      settextVal("");
+      setimageVal(false);
+    }
+  };
+  const photoHandler = (e) => {
+    e.target.value !== "" && setimageVal(true);
+  };
+  const inputHandler = (e) => {
+    settextVal(e.target.value);
+  };
   return (
     <CreatePostWapper>
       <PersonWapper>
         <div></div>
         <h2>Nagasai jithin</h2>
       </PersonWapper>
-      <FormWapper>
-        <input type="text" placeholder="Write somthing ....." />
+      <FormWapper onSubmit={formHandler}>
+        <input
+          type="text"
+          name="postText"
+          placeholder="Write somthing ....."
+          onChange={inputHandler}
+          value={textVal}
+        />
         <label htmlFor="file" className="postbtn">
-          <input id="file" type="file" accept="image/*" />
-          +Add A Photo
+          <input
+            id="file"
+            type="file"
+            name="postImage"
+            accept="image/*"
+            onChange={photoHandler}
+          />
+          {imageVal ? "Photo is Add" : "+Add A Photo"}
         </label>
         <button className="postbtn">Post</button>
       </FormWapper>
@@ -76,4 +107,6 @@ const Createapost = () => {
   );
 };
 
-export default Createapost;
+export default connect(null, {
+  addPost,
+})(Createapost);

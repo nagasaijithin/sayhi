@@ -11,7 +11,7 @@ const ButtonOnSave = styled(MainButton)`
   cursor: pointer;
   font-size: 2rem;
 `;
-const ContentWapper = styled.div`
+const ContentWapper = styled.form`
   height: 90%;
   width: 100%;
   display: flex;

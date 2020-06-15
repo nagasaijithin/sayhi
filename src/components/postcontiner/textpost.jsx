@@ -14,20 +14,17 @@ const PostLink = styled(Link)`
   text-decoration: none;
   color: var(--mainTextColor);
 `;
-const Textpost = () => {
+const Textpost = (props) => {
+  const { commentscount, date, likescount, postcontent, userName } = props;
   return (
     <Card>
-      <Postheader />
+      <Postheader date={date} username={userName} />
       <PostLink to="/post/123">
         <ContentWapper>
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum,
-            repellendus inventore ad mollitia harum sit eius voluptas officia
-            dolore quam?
-          </p>
+          <p>{postcontent}</p>
         </ContentWapper>
       </PostLink>
-      <Likeandcomment />
+      <Likeandcomment likes={likescount} comments={commentscount} />
     </Card>
   );
 };

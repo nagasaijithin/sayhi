@@ -10,6 +10,7 @@ import history from "./history";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { createFirestoreInstance } from "redux-firestore";
 import fbConfig from "./firebase/fbconfig";
 
 import Loading from "./components/loading";
@@ -25,6 +26,7 @@ const rrfProp = {
   firebase: fbConfig,
   config: rrfConfig,
   dispatch: store.dispatch,
+  createFirestoreInstance,
 };
 function AuthIsLoaded({ children }) {
   const auth = useSelector((state) => state.firebase.auth);

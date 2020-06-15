@@ -22,16 +22,16 @@ const LikeAndCommentWapper = styled.div`
     }
   }
 `;
-const Likeandcomment = () => {
+const Likeandcomment = ({ likes, comments }) => {
   return (
     <LikeAndCommentWapper>
       <div>
         <img src={heartflame} alt="unlikeheart" />
-        <span>250 Likes</span>
+        <span>{likes} Likes</span>
       </div>
       <div>
         <img src={commenticon} alt="commenticon" />
-        <span>50 comments</span>
+        <span>{comments} comments</span>
       </div>
     </LikeAndCommentWapper>
   );

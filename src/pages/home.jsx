@@ -8,9 +8,11 @@ import { CardsWapper, CardContiner } from "../style/ui/components";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 
-const Home = (props) => {
-  const uid = props.firebase.auth.uid;
+const Home = ({ firebase, posts }) => {
+  const uid = firebase.auth.uid;
   if (!uid) {
     return <Redirect to="/login" />;
   }
@@ -18,10 +20,13 @@ const Home = (props) => {
     <CardsWapper>
       <CardContiner>
         <Createapost />
-        <Textpost />
-        <Postwithimage />
-        <Postwithimage />
-        <Postwithimage />
+        {posts.map((data, i) => {
+          return data.image ? (
+            <Postwithimage key={i} {...data} />
+          ) : (
+            <Textpost key={i} {...data} />
+          );
+        })}
       </CardContiner>
     </CardsWapper>
   );
@@ -30,6 +35,11 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
+    posts: state.posts.posts,
+    state,
   };
 };
-export default connect(mapStateToProps)(Home);
+export default compose(
+  firestoreConnect(() => ["posts"]),
+  connect(mapStateToProps)
+)(Home);
