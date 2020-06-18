@@ -17,15 +17,22 @@ export const userLogin = (data) => (
 export const createNewUser = (data) => (
   dispatch,
   getState,
-  { getFirebase }
+  { getFirebase, getFirestore }
 ) => {
   const firebase = getFirebase();
-  const { email, password } = data;
+  const firestore = getFirestore();
+  const { email, password, firstname, lastname } = data;
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then((data) => {
-      console.log(data);
+      return firestore.collection("users").doc(data.user.uid).set({
+        firstname,
+        lastname,
+        userid: data.user.uid,
+      });
+    })
+    .then(() => {
       dispatch({ type: "CREATE_USE_SUC" });
     })
     .catch((error) => {

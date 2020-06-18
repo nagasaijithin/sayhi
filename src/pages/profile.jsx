@@ -13,7 +13,8 @@ import Createapost from "../components/postcontiner/createapost";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
   font-size: 1.7rem;
@@ -96,13 +97,14 @@ const Profile = (props) => {
         <CardsWapper>
           <CardContiner>
             <Createapost />
-            {props.posts.map((data, i) => {
-              return i > 3 && data.image ? (
-                <Postwithimage key={i} {...data} />
-              ) : (
-                <Textpost key={i} {...data} />
-              );
-            })}
+            {props.posts &&
+              props.posts.map((data, i) => {
+                return data.image !== "false" ? (
+                  <Postwithimage key={i} {...data} />
+                ) : (
+                  <Textpost key={i} {...data} />
+                );
+              })}
           </CardContiner>
         </CardsWapper>
       </UserPostWapper>
@@ -113,7 +115,12 @@ const Profile = (props) => {
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
-    posts: state.posts.posts,
+    posts: state.firestore.ordered.posts,
   };
 };
-export default connect(mapStateToProps)(Profile);
+export default compose(
+  firestoreConnect(() => [
+    { collection: "posts", orderBy: ["createAt", "desc"] },
+  ]),
+  connect(mapStateToProps)
+)(Profile);

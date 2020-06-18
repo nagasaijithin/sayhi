@@ -5,7 +5,7 @@ import Postheader from "./postheader";
 import Likeandcomment from "./likeandcomment";
 // import simpleimg from "../../assets/simple.jpg";
 import { Card } from "../../style/ui/components";
-
+import moment from "moment";
 const ContentWapper = styled.div`
   font-size: 1.4rem;
   margin: 1rem;
@@ -22,18 +22,15 @@ const PostLink = styled(Link)`
   color: var(--mainTextColor);
 `;
 const Postwithimage = (props) => {
-  const {
-    commentscount,
-    date,
-    likescount,
-    postcontent,
-    userName,
-    image,
-  } = props;
+  const { comments, createAt, likes, postcontent, username, id, image } = props;
+  const date =
+    moment(createAt.toDate()).fromNow() === "a day ago"
+      ? moment(createAt.toDate()).calendar()
+      : moment(createAt.toDate()).fromNow();
   return (
     <Card>
-      <Postheader date={date} username={userName} />
-      <PostLink to="/post/1234">
+      <Postheader date={date} username={username} />
+      <PostLink to={`/post/${id}`}>
         <ContentWapper>
           <p>{postcontent}</p>
         </ContentWapper>
@@ -41,7 +38,7 @@ const Postwithimage = (props) => {
           <img src={image} alt="heroimg" />
         </ImgWapper>
       </PostLink>
-      <Likeandcomment likes={likescount} comments={commentscount} />
+      <Likeandcomment likes={likes.length} comments={comments.length} />
     </Card>
   );
 };

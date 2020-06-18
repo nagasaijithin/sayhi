@@ -16,17 +16,19 @@ const Home = ({ firebase, posts }) => {
   if (!uid) {
     return <Redirect to="/login" />;
   }
+  console.log(posts);
   return (
     <CardsWapper>
       <CardContiner>
         <Createapost />
-        {posts.map((data, i) => {
-          return data.image ? (
-            <Postwithimage key={i} {...data} />
-          ) : (
-            <Textpost key={i} {...data} />
-          );
-        })}
+        {posts &&
+          posts.map((data, i) => {
+            return data.image !== "false" ? (
+              <Postwithimage key={i} {...data} />
+            ) : (
+              <Textpost key={i} {...data} />
+            );
+          })}
       </CardContiner>
     </CardsWapper>
   );
@@ -35,11 +37,12 @@ const Home = ({ firebase, posts }) => {
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
-    posts: state.posts.posts,
-    state,
+    posts: state.firestore.ordered.posts,
   };
 };
 export default compose(
-  firestoreConnect(() => ["posts"]),
+  firestoreConnect(() => [
+    { collection: "posts", orderBy: ["createAt", "desc"] },
+  ]),
   connect(mapStateToProps)
 )(Home);

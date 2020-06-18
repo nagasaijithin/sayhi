@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Card } from "../../style/ui/components";
 import { connect } from "react-redux";
 import { addPost } from "../../store/actions/posts";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 const CreatePostWapper = styled(Card)`
   display: flex;
   flex-direction: column;
@@ -59,14 +61,26 @@ const FormWapper = styled.form`
     border-radius: var(--mainborderRadius);
   }
 `;
-const Createapost = (props) => {
+const Createapost = ({ addPost, users, uid }) => {
   const [imageVal, setimageVal] = useState(false);
   const [textVal, settextVal] = useState("");
+  const userName =
+    users &&
+    users.reduce((ac, user) => {
+      console.log(user, uid);
+      console.log(user.userid === uid);
+      if (user.userid === uid) {
+        ac = user.firstname + " " + user.lastname;
+        return ac;
+      }
+      return ac;
+    }, "User Name not Diffined");
+  console.log(userName);
   const formHandler = (e) => {
     e.preventDefault();
     e.persist();
     if (e.target.postText.value !== "") {
-      props.addPost(e.target.postText.value, e.target.postImage.value);
+      addPost(e.target.postText.value, e.target.postImage.value, userName);
       settextVal("");
       setimageVal(false);
     }
@@ -106,7 +120,15 @@ const Createapost = (props) => {
     </CreatePostWapper>
   );
 };
-
-export default connect(null, {
-  addPost,
-})(Createapost);
+const mapStateToProps = (state) => {
+  return {
+    users: state.firestore.ordered.users,
+    uid: state.firebase.auth.uid,
+  };
+};
+export default compose(
+  firestoreConnect(() => ["users"]),
+  connect(mapStateToProps, {
+    addPost,
+  })
+)(Createapost);
