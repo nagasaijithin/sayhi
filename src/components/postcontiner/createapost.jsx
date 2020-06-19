@@ -21,6 +21,10 @@ const PersonWapper = styled.div`
     height: 5rem;
     background: var(--mainColor);
     border-radius: 50%;
+    & > img {
+      height: 100%;
+      width: 100%;
+    }
   }
   & > h2 {
     padding: 1rem;
@@ -67,20 +71,18 @@ const Createapost = ({ addPost, users, uid }) => {
   const userName =
     users &&
     users.reduce((ac, user) => {
-      console.log(user, uid);
-      console.log(user.userid === uid);
       if (user.userid === uid) {
         ac = user.firstname + " " + user.lastname;
         return ac;
       }
       return ac;
     }, "User Name not Diffined");
-  console.log(userName);
   const formHandler = (e) => {
     e.preventDefault();
     e.persist();
     if (e.target.postText.value !== "") {
       addPost(e.target.postText.value, e.target.postImage.value, userName);
+      // console.dir(e.target.postImage);
       settextVal("");
       setimageVal(false);
     }
@@ -94,8 +96,10 @@ const Createapost = ({ addPost, users, uid }) => {
   return (
     <CreatePostWapper>
       <PersonWapper>
-        <div></div>
-        <h2>Nagasai jithin</h2>
+        <div>
+          <img src={`https://robohash.org/${userName}`} alt={userName} />
+        </div>
+        <h2>{userName}</h2>
       </PersonWapper>
       <FormWapper onSubmit={formHandler}>
         <input

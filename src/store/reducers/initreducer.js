@@ -1,4 +1,4 @@
-const initState = { hi: "hi" };
+const initState = { name: "" };
 const InitReducer = (state = initState, action) => {
   switch (action.type) {
     case "LOGIN_SUC":
@@ -15,6 +15,10 @@ const InitReducer = (state = initState, action) => {
     case "CREATE_USE_ERR":
       console.log(action.payload);
       return { ...state };
+    case "GET_NAME":
+      return {
+        name: action.payload,
+      };
     default:
       return state;
   }

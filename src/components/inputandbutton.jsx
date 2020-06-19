@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-const FormWapper = styled.div`
+const FormWapper = styled.form`
   display: flex;
   justify-content: space-evenly;
   margin: 1rem;
@@ -24,10 +24,25 @@ const FormWapper = styled.div`
     cursor: pointer;
   }
 `;
-const Inputandbutton = ({ placeholder, buttonContent }) => {
+const Inputandbutton = ({ placeholder, buttonContent, method }) => {
+  const [inptVal, setInpVal] = useState("");
+  const formHandler = (e) => {
+    e.preventDefault();
+    e.persist();
+    if (inptVal !== "") {
+      method(e.target.filed.value);
+      setInpVal("");
+    }
+  };
   return (
-    <FormWapper>
-      <input type="text" placeholder={placeholder} />
+    <FormWapper onSubmit={formHandler}>
+      <input
+        type="text"
+        name="filed"
+        value={inptVal}
+        onChange={(e) => setInpVal(e.target.value)}
+        placeholder={placeholder}
+      />
       <button>{buttonContent}</button>
     </FormWapper>
   );

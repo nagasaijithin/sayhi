@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
 import { CardsWapper, CardContiner, Card } from "../style/ui/components";
 import Postheader from "../components/postcontiner/postheader";
-// import Postwithimage from "../components/postcontiner/postwithimage";
+import Postwithimage from "../components/postcontiner/postwithimage";
 import Textpost from "../components/postcontiner/textpost";
 import Inputandbutton from "../components/inputandbutton";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 
+import { addPostComment } from "../store/actions/posts";
+import { getusername } from "../store/actions/init";
 const CommentWapper = styled.div`
   margin: 2rem;
   & > p {
@@ -25,58 +29,58 @@ const CommentWapper = styled.div`
     cursor: pointer;
   }
 `;
-const Post = (props) => {
-  // useGetPostId()
-  const uid = props.firebase.auth.uid;
+const Post = ({
+  match,
+  firebase,
+  posts,
+  addPostComment,
+  postcomments,
+  getusername,
+  curusername,
+}) => {
+  const uid = firebase.auth.uid;
+  useEffect(() => {
+    getusername();
+  }, [getusername, uid]);
   if (!uid) {
     return <Redirect to="/login" />;
   }
+  const postContent =
+    posts && posts.filter((post) => post.id === match.params.id);
+  const commentHandler = (value) => {
+    const { id } = postContent[0];
+    addPostComment(value, curusername, id);
+  };
   return (
     <CardsWapper>
       <CardContiner>
-        {/* <Postwithimage /> */}
-        <Textpost />
+        {postContent &&
+          postContent.map((post, i) => {
+            return post.image === "false" ? (
+              <Textpost key={i} {...post} />
+            ) : (
+              <Postwithimage key={i} {...post} />
+            );
+          })}
+
         <Card>
           <div>
-            <Postheader timeshow={true} />
+            <Postheader timeshow={true} username={curusername} />
           </div>
           <Inputandbutton
             placeholder="Write you'r comment"
             buttonContent="Comment"
+            method={commentHandler}
           />
           <h1>Comments</h1>
-          <CommentWapper>
-            <Postheader />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Accusantium quo modi voluptatibus,
-            </p>
-            <span>Like 20</span>
-          </CommentWapper>
-          <CommentWapper>
-            <Postheader />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Accusantium quo modi voluptatibus,
-            </p>
-            <span>Like 20</span>
-          </CommentWapper>
-          <CommentWapper>
-            <Postheader />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Accusantium quo modi voluptatibus,
-            </p>
-            <span>Like 20</span>
-          </CommentWapper>
-          <CommentWapper>
-            <Postheader />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Accusantium quo modi voluptatibus,
-            </p>
-            <span>Like 20</span>
-          </CommentWapper>
+          {postcomments &&
+            postcomments.map((comment, i) => (
+              <CommentWapper key={i}>
+                <Postheader username={comment.username} />
+                <p>{comment.comment}</p>
+                <span>Like 20</span>
+              </CommentWapper>
+            ))}
         </Card>
       </CardContiner>
     </CardsWapper>
@@ -86,6 +90,29 @@ const Post = (props) => {
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
+    posts: state.firestore.ordered.posts,
+    postcomments: state.firestore.ordered.comments,
+    curusername: state.init.name,
   };
 };
-export default connect(mapStateToProps)(Post);
+export default compose(
+  firestoreConnect((props) => {
+    return [
+      {
+        collection: "posts",
+        orderBy: ["createAt", "desc"],
+      },
+      {
+        collection: "posts",
+        orderBy: ["createAt", "desc"],
+        doc: props.match.params.id,
+        subcollections: [{ collection: "comments" }],
+        storeAs: "comments",
+      },
+    ];
+  }),
+  connect(mapStateToProps, {
+    addPostComment,
+    getusername,
+  })
+)(Post);

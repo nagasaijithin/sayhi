@@ -22,3 +22,25 @@ export const addPost = (postText, postImage, username) => (
     ...postObj,
   });
 };
+export const addPostComment = (comment, name, postid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const state = getState();
+  const firestore = getFirestore();
+
+  const commentobj = {
+    comment,
+    username: name,
+    userid: state.firebase.auth.uid,
+    createAt: new Date(),
+  };
+  firestore
+    .collection("posts")
+    .doc(postid)
+    .collection("comments")
+    .add({
+      ...commentobj,
+    });
+};

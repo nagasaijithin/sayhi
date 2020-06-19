@@ -49,3 +49,22 @@ export const UserLogout = () => (dispatch, getState, { getFirebase }) => {
       dispatch({ type: "SIGNOUT_SUC" });
     });
 };
+export const getusername = () => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  const state = getState();
+
+  firestore
+    .collection("users")
+    .doc(state.firebase.auth.uid)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const name = doc.data().firstname + " " + doc.data().lastname;
+        dispatch({ type: "GET_NAME", payload: name });
+      }
+    });
+};

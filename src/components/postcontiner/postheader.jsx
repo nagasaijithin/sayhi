@@ -9,6 +9,10 @@ const PersonWapper = styled.div`
     height: 5rem;
     background: var(--mainColor);
     border-radius: 50%;
+    & > img {
+      height: 100%;
+      width: 100%;
+    }
   }
   & > div {
     & > a {
@@ -28,7 +32,9 @@ const PersonWapper = styled.div`
 const Postheader = ({ timeshow, message, path, date, username }) => {
   return (
     <PersonWapper>
-      <Link to={path ? path : "/profile/098"} className="img"></Link>
+      <Link to={path ? path : "/profile/098"} className="img">
+        <img src={`https://robohash.org/${username}`} alt={username} />
+      </Link>
       <div>
         <Link to={path ? path : "/profile/098"}>
           <h2>{username}</h2>

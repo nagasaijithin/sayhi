@@ -16,7 +16,6 @@ const Home = ({ firebase, posts }) => {
   if (!uid) {
     return <Redirect to="/login" />;
   }
-  console.log(posts);
   return (
     <CardsWapper>
       <CardContiner>
