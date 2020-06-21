@@ -22,7 +22,15 @@ const PostLink = styled(Link)`
   color: var(--mainTextColor);
 `;
 const Postwithimage = (props) => {
-  const { comments, createAt, likes, postcontent, username, id, image } = props;
+  const {
+    commentscount,
+    createAt,
+    likes,
+    postcontent,
+    username,
+    id,
+    image,
+  } = props;
   const date =
     moment(createAt.toDate()).fromNow() === "a day ago"
       ? moment(createAt.toDate()).calendar()
@@ -38,7 +46,12 @@ const Postwithimage = (props) => {
           <img src={image} alt="heroimg" />
         </ImgWapper>
       </PostLink>
-      <Likeandcomment likes={likes.length} comments={comments.length} />
+      <Likeandcomment
+        likes={likes.length}
+        likelist={likes}
+        postid={id}
+        comments={commentscount}
+      />
     </Card>
   );
 };

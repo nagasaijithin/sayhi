@@ -11,7 +11,7 @@ export const addPost = (postText, postImage, username) => (
   const postObj = {
     image: postImage === "" ? "false" : postImage,
     likes: [],
-    comments: [{ uid: { comntcontent: "" } }],
+    commentscount: 0,
     postcontent: postText,
     createAt: new Date(),
     username: username,
@@ -21,6 +21,28 @@ export const addPost = (postText, postImage, username) => (
   firestore.collection("posts").add({
     ...postObj,
   });
+};
+export const addPostWithImage = (postText, postImage, username) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firebase = getFirebase();
+  const storageRef = firebase.storage().ref("postimages/" + postImage.name);
+  storageRef.put(postImage).then((snapshot) => {
+    // console.log(snapshot.metadata.downloadURLs[0]);
+    storageRef.getDownloadUrl().then((url) => console.log(url));
+  });
+  // storageRef.on(
+  //   "state_change",
+  //   () => {},
+  //   () => {},
+  //   () => {
+  //     storageRef.getDownloadUrl().then((url) => {
+  //       console.log(url);
+  //     });
+  //   }
+  // );
 };
 export const addPostComment = (comment, name, postid) => (
   dispatch,
@@ -35,6 +57,7 @@ export const addPostComment = (comment, name, postid) => (
     username: name,
     userid: state.firebase.auth.uid,
     createAt: new Date(),
+    postid,
   };
   firestore
     .collection("posts")
@@ -42,5 +65,33 @@ export const addPostComment = (comment, name, postid) => (
     .collection("comments")
     .add({
       ...commentobj,
+    });
+};
+
+export const likeaPost = (uid, postid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  firestore
+    .collection("posts")
+    .doc(postid)
+    .update({
+      likes: firestore.FieldValue.arrayUnion(uid),
+    });
+};
+
+export const unlikeaPost = (uid, postid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  firestore
+    .collection("posts")
+    .doc(postid)
+    .update({
+      likes: firestore.FieldValue.arrayRemove(uid),
     });
 };
