@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import { Link } from "react-router-dom";
 import heartflame from "../../svg/heartflame.svg";
 import heart from "../../svg/heart.svg";
 import commenticon from "../../svg/comment.svg";
@@ -13,9 +13,12 @@ const LikeAndCommentWapper = styled.div`
   padding: 0.5rem 1rem;
   border: 1px solid rgba(0, 0, 0, 0.42);
   border-radius: var(--mainborderRadius);
-  & > div {
+  & > div,
+  a {
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: var(--mainTextColor);
     & > img {
       height: 3rem;
       cursor: pointer;
@@ -55,10 +58,10 @@ const Likeandcomment = ({
         )}
         <span>{likes} Likes</span>
       </div>
-      <div>
+      <Link to={`post/${postid}`}>
         <img src={commenticon} alt="commenticon" />
         <span>{comments} comments</span>
-      </div>
+      </Link>
     </LikeAndCommentWapper>
   );
 };

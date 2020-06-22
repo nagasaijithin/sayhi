@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
-import { addPostComment } from "../store/actions/posts";
+import { addPostComment, liketheComment } from "../store/actions/posts";
 import { getusername } from "../store/actions/init";
 const CommentWapper = styled.div`
   margin: 2rem;
@@ -37,6 +37,7 @@ const Post = ({
   postcomments,
   getusername,
   curusername,
+  liketheComment,
 }) => {
   const uid = firebase.auth.uid;
   useEffect(() => {
@@ -50,6 +51,10 @@ const Post = ({
   const commentHandler = (value) => {
     const { id } = postContent[0];
     addPostComment(value, curusername, id);
+  };
+  const likeaComment = (postid, id, cond) => {
+    console.log("hi");
+    liketheComment(postid, id, cond);
   };
   return (
     <CardsWapper>
@@ -74,13 +79,19 @@ const Post = ({
           />
           <h1>Comments</h1>
           {postcomments &&
-            postcomments.map((comment, i) => (
-              <CommentWapper key={i}>
-                <Postheader username={comment.username} />
-                <p>{comment.comment}</p>
-                <span>Like 20</span>
-              </CommentWapper>
-            ))}
+            postcomments.map((commentdata, i) => {
+              const { id, username, comment, postid, likes } = commentdata;
+              const cond = likes.some((like) => like === uid);
+              return (
+                <CommentWapper key={i}>
+                  <Postheader username={username} />
+                  <p>{comment}</p>
+                  <span onClick={() => likeaComment(postid, id, cond)}>
+                    {cond ? "unlike" : "Like"} {likes.length}
+                  </span>
+                </CommentWapper>
+              );
+            })}
         </Card>
       </CardContiner>
     </CardsWapper>
@@ -113,6 +124,7 @@ export default compose(
   }),
   connect(mapStateToProps, {
     addPostComment,
+    liketheComment,
     getusername,
   })
 )(Post);

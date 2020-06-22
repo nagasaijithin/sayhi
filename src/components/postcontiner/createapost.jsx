@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Card } from "../../style/ui/components";
 import { connect } from "react-redux";
-import { addPost, addPostWithImage } from "../../store/actions/posts";
+import { addPost } from "../../store/actions/posts";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 const CreatePostWapper = styled(Card)`
@@ -65,7 +65,7 @@ const FormWapper = styled.form`
     border-radius: var(--mainborderRadius);
   }
 `;
-const Createapost = ({ addPost, users, uid, addPostWithImage }) => {
+const Createapost = ({ addPost, users, uid }) => {
   const [imageVal, setimageVal] = useState(false);
   const [textVal, settextVal] = useState("");
   const userName =
@@ -81,14 +81,7 @@ const Createapost = ({ addPost, users, uid, addPostWithImage }) => {
     e.preventDefault();
     e.persist();
     if (e.target.postText.value !== "") {
-      // addPost(e.target.postText.value, e.target.postImage.value, userName);
-      addPostWithImage(
-        e.target.postText.value,
-        e.target.postImage.files[0],
-        userName
-      );
-
-      // console.dir(e.target.postImage);
+      addPost(e.target.postText.value, e.target.postImage, userName);
       settextVal("");
       setimageVal(false);
     }
@@ -139,7 +132,6 @@ const mapStateToProps = (state) => {
 export default compose(
   firestoreConnect(() => ["users"]),
   connect(mapStateToProps, {
-    addPostWithImage,
     addPost,
   })
 )(Createapost);

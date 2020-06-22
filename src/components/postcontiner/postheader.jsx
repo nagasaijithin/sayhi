@@ -29,14 +29,14 @@ const PersonWapper = styled.div`
     font-size: 1.2rem;
   }
 `;
-const Postheader = ({ timeshow, message, path, date, username }) => {
+const Postheader = ({ timeshow, message, path, date, username, userid }) => {
   return (
     <PersonWapper>
-      <Link to={path ? path : "/profile/098"} className="img">
+      <Link to={path ? path : `/profile/${userid}`} className="img">
         <img src={`https://robohash.org/${username}`} alt={username} />
       </Link>
       <div>
-        <Link to={path ? path : "/profile/098"}>
+        <Link to={path ? path : `/profile/${userid}`}>
           <h2>{username}</h2>
         </Link>
         {timeshow ? null : <span>{message ? message : date}</span>}

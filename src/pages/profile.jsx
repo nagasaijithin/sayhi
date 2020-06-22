@@ -6,7 +6,6 @@ import {
   CardsWapper,
   CardContiner,
 } from "../style/ui/components";
-import simple from "../assets/simple.jpg";
 import Textpost from "../components/postcontiner/textpost";
 import Postwithimage from "../components/postcontiner/postwithimage";
 import Createapost from "../components/postcontiner/createapost";
@@ -67,43 +66,57 @@ const UserPostWapper = styled.div`
     font-size: 2.4rem;
   }
 `;
-const Profile = (props) => {
-  const uid = props.firebase.auth.uid;
-  if (!uid) {
+const Profile = ({ posts, firebase, user, match }) => {
+  const loginuid = firebase.auth.uid;
+  if (!loginuid) {
     return <Redirect to="/login" />;
   }
+  const viewuserid = match.params.id;
+  let username = user && user[0].firstname + " " + user[0].lastname;
+
   return (
     <>
       <ProfileContentWapper>
         <div className="userinfo">
           <ImageWapper>
-            <img src={simple} alt="UserImage" />
+            <img src={`https://robohash.org/${username}`} alt={username} />
           </ImageWapper>
-          <h2>Nagasai Jithin</h2>
+          <h2>{username}</h2>
           <p>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
             molestiae nulla voluptates nobis optio, totam cumque sapiente labore
             repellat provident praesentium.
           </p>
           <div>
-            <ButtonWapper>Follow</ButtonWapper>
-            <LinkWapper to="/messages/092">Message</LinkWapper>
-            <LinkWapper to="/editprofile/092">Edit you'r Profile</LinkWapper>
+            {loginuid === viewuserid ? (
+              <LinkWapper to={`/editprofile/${viewuserid}`}>
+                Edit you'r Profile
+              </LinkWapper>
+            ) : (
+              <>
+                <ButtonWapper>Follow</ButtonWapper>
+                <ButtonWapper>Followers 2</ButtonWapper>
+                <LinkWapper to={`/messages/${viewuserid}`}>Message</LinkWapper>
+              </>
+            )}
           </div>
         </div>
       </ProfileContentWapper>
       <UserPostWapper>
-        <h2>Nagasai Jithin Post's</h2>
+        <h2>{username} Post's</h2>
         <CardsWapper>
           <CardContiner>
-            <Createapost />
-            {props.posts &&
-              props.posts.map((data, i) => {
-                return data.image !== "false" ? (
-                  <Postwithimage key={i} {...data} />
-                ) : (
-                  <Textpost key={i} {...data} />
-                );
+            {loginuid === viewuserid && <Createapost />}
+            {posts &&
+              posts.map((data, i) => {
+                if (data.useruid === viewuserid) {
+                  return data.image !== "false" ? (
+                    <Postwithimage key={i} {...data} />
+                  ) : (
+                    <Textpost key={i} {...data} />
+                  );
+                }
+                return "";
               })}
           </CardContiner>
         </CardsWapper>
@@ -116,11 +129,15 @@ const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
     posts: state.firestore.ordered.posts,
+    user: state.firestore.ordered.users,
   };
 };
 export default compose(
-  firestoreConnect(() => [
-    { collection: "posts", orderBy: ["createAt", "desc"] },
-  ]),
+  firestoreConnect((props) => {
+    return [
+      { collection: "posts", orderBy: ["createAt", "desc"] },
+      { collection: "users", doc: props.match.params.id },
+    ];
+  }),
   connect(mapStateToProps)
 )(Profile);

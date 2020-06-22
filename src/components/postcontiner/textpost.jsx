@@ -15,14 +15,23 @@ const PostLink = styled(Link)`
   color: var(--mainTextColor);
 `;
 const Textpost = (props) => {
-  const { commentscount, createAt, likes, postcontent, username, id } = props;
+  const {
+    commentscount,
+    createAt,
+    likes,
+    postcontent,
+    username,
+    id,
+    useruid,
+  } = props;
+
   const date =
     moment(createAt.toDate()).fromNow() === "a day ago"
       ? moment(createAt.toDate()).calendar()
       : moment(createAt.toDate()).fromNow();
   return (
     <Card>
-      <Postheader date={date} username={username} />
+      <Postheader date={date} username={username} userid={useruid} />
       <PostLink to={`/post/${id}`}>
         <ContentWapper>
           <p>{postcontent}</p>

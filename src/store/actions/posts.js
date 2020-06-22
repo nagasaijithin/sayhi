@@ -5,11 +5,10 @@ export const addPost = (postText, postImage, username) => (
 ) => {
   const firestore = getFirestore();
   const state = getState();
-
-  console.log(postImage === "" ? "false" : postImage);
+  const firebase = getFirebase();
 
   const postObj = {
-    image: postImage === "" ? "false" : postImage,
+    image: "false",
     likes: [],
     commentscount: 0,
     postcontent: postText,
@@ -18,31 +17,31 @@ export const addPost = (postText, postImage, username) => (
     useruid: state.firebase.auth.uid,
   };
 
-  firestore.collection("posts").add({
-    ...postObj,
-  });
-};
-export const addPostWithImage = (postText, postImage, username) => (
-  dispatch,
-  getState,
-  { getFirebase, getFirestore }
-) => {
-  const firebase = getFirebase();
-  const storageRef = firebase.storage().ref("postimages/" + postImage.name);
-  storageRef.put(postImage).then((snapshot) => {
-    // console.log(snapshot.metadata.downloadURLs[0]);
-    storageRef.getDownloadUrl().then((url) => console.log(url));
-  });
-  // storageRef.on(
-  //   "state_change",
-  //   () => {},
-  //   () => {},
-  //   () => {
-  //     storageRef.getDownloadUrl().then((url) => {
-  //       console.log(url);
-  //     });
-  //   }
-  // );
+  firestore
+    .collection("posts")
+    .add({
+      ...postObj,
+    })
+    .then((data) => {
+      const postId = data.id;
+      const image = postImage.files[0];
+      const storageRef = firebase.storage().ref();
+      if (postImage.value !== "") {
+        storageRef
+          .child("postimages/" + postId)
+          .put(image)
+          .then((data) => {
+            storageRef
+              .child("postimages/" + postId)
+              .getDownloadURL()
+              .then((url) => {
+                firestore.collection("posts").doc(postId).update({
+                  image: url,
+                });
+              });
+          });
+      }
+    });
 };
 export const addPostComment = (comment, name, postid) => (
   dispatch,
@@ -58,6 +57,7 @@ export const addPostComment = (comment, name, postid) => (
     userid: state.firebase.auth.uid,
     createAt: new Date(),
     postid,
+    likes: [],
   };
   firestore
     .collection("posts")
@@ -93,5 +93,25 @@ export const unlikeaPost = (uid, postid) => (
     .doc(postid)
     .update({
       likes: firestore.FieldValue.arrayRemove(uid),
+    });
+};
+
+export const liketheComment = (postid, commentId, cond) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  const state = getState();
+  const uid = state.firebase.auth.uid;
+  firestore
+    .collection("posts")
+    .doc(postid)
+    .collection("comments")
+    .doc(commentId)
+    .update({
+      likes: cond
+        ? firestore.FieldValue.arrayRemove(uid)
+        : firestore.FieldValue.arrayUnion(uid),
     });
 };

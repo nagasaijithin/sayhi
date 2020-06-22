@@ -81,25 +81,26 @@ const LinkName = styled.span`
     transform: rotate(136deg);
   }
 `;
-const Loginlinks = [
-  { icon: home, title: "Home", path: "/" },
-  { icon: person, title: "Profile", path: "/profile/098" },
-  { icon: notification, title: "Notifications", path: "/notifications" },
-  { icon: message, title: "Message", path: "/messages" },
-  { icon: logout, title: "Logout", path: "/logout" },
-];
-const NotloginLinks = [
-  { icon: login, title: "Login", path: "/login" },
-  {
-    icon: createaccount,
-    title: "Signup",
-    path: "/signup",
-  },
-];
+
 const NavLinks = (props) => {
   const uid = props.firebase.auth.uid;
-  const Links = uid ? Loginlinks : NotloginLinks;
+  const Loginlinks = [
+    { icon: home, title: "Home", path: "/" },
+    { icon: person, title: "Profile", path: `/profile/${uid}` },
+    { icon: notification, title: "Notifications", path: "/notifications" },
+    { icon: message, title: "Message", path: "/messages" },
+    { icon: logout, title: "Logout", path: "/logout" },
+  ];
 
+  const NotloginLinks = [
+    { icon: login, title: "Login", path: "/login" },
+    {
+      icon: createaccount,
+      title: "Signup",
+      path: "/signup",
+    },
+  ];
+  const Links = uid ? Loginlinks : NotloginLinks;
   return (
     <>
       <MainLinksWapper>

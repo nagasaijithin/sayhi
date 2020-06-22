@@ -30,6 +30,7 @@ const Postwithimage = (props) => {
     username,
     id,
     image,
+    useruid,
   } = props;
   const date =
     moment(createAt.toDate()).fromNow() === "a day ago"
@@ -37,7 +38,7 @@ const Postwithimage = (props) => {
       : moment(createAt.toDate()).fromNow();
   return (
     <Card>
-      <Postheader date={date} username={username} />
+      <Postheader date={date} username={username} userid={useruid} />
       <PostLink to={`/post/${id}`}>
         <ContentWapper>
           <p>{postcontent}</p>
