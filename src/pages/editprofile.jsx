@@ -4,7 +4,7 @@ import { MainButton } from "../style/ui/components";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { editeProfile } from "../store/actions/init";
 const ButtonOnSave = styled(MainButton)`
   padding: 1rem;
   border-radius: var(--mainborderRadius);
@@ -66,35 +66,79 @@ const NameBioWapper = styled.div`
     }
   }
 `;
-const Editprofile = (props) => {
-  const uid = props.firebase.auth.uid;
-  if (!uid) {
-    return <Redirect to="/login" />;
+class Editprofile extends React.Component {
+  constructor(props) {
+    super(props);
+    const uid = this.props.firebase.auth.uid;
+    if (!uid) {
+      return <Redirect to="/login" />;
+    }
+    this.state = {
+      firstname: "",
+      lastname: "",
+      bio: "",
+    };
   }
-  return (
-    <ContentWapper>
-      <label htmlFor="profile">
-        <span>+</span>
-      </label>
-      <input type="file" id="profile" />
-      <NameBioWapper>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input placeholder="Type you'r Name" type="text" id="name" />
-        </div>
-        <div>
-          <label htmlFor="bio">Bio</label>
-          <input type="text" id="bio" placeholder="Type you'r Bio" />
-        </div>
-      </NameBioWapper>
-      <ButtonOnSave>Save </ButtonOnSave>
-    </ContentWapper>
-  );
-};
+  formHandler = (e) => {
+    e.preventDefault();
+
+    this.props.editeProfile(e.target.profile, this.state);
+  };
+  inputHandler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+  render() {
+    return (
+      <ContentWapper onSubmit={this.formHandler}>
+        <label htmlFor="profile">
+          <span>+</span>
+        </label>
+        <input type="file" id="profile" accept="image/*" name="profile" />
+        <NameBioWapper>
+          <div>
+            <label htmlFor="name">FirstName</label>
+            <input
+              placeholder="Type you'r FirstName"
+              type="text"
+              name="firstname"
+              id="firstname"
+              onChange={this.inputHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor="name">LastName</label>
+            <input
+              placeholder="Type you'r LastName"
+              type="text"
+              name="lastname"
+              id="lastname"
+              onChange={this.inputHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor="bio">Bio</label>
+            <input
+              type="text"
+              id="bio"
+              placeholder="Type you'r Bio"
+              name="bio"
+              onChange={this.inputHandler}
+            />
+          </div>
+        </NameBioWapper>
+        <ButtonOnSave>Save </ButtonOnSave>
+      </ContentWapper>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
     firebase: state.firebase,
   };
 };
-export default connect(mapStateToProps)(Editprofile);
+export default connect(mapStateToProps, {
+  editeProfile,
+})(Editprofile);
