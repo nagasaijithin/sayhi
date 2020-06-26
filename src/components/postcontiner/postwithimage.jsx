@@ -7,7 +7,7 @@ import Likeandcomment from "./likeandcomment";
 import { Card } from "../../style/ui/components";
 import moment from "moment";
 const ContentWapper = styled.div`
-  font-size: 1.4rem;
+  font-size: 2rem;
   margin: 1rem;
 `;
 const ImgWapper = styled.div`
@@ -31,6 +31,7 @@ const Postwithimage = (props) => {
     id,
     image,
     useruid,
+    userprofile,
   } = props;
   const date =
     moment(createAt.toDate()).fromNow() === "a day ago"
@@ -38,7 +39,12 @@ const Postwithimage = (props) => {
       : moment(createAt.toDate()).fromNow();
   return (
     <Card>
-      <Postheader date={date} username={username} userid={useruid} />
+      <Postheader
+        date={date}
+        username={username}
+        userid={useruid}
+        userprofile={userprofile}
+      />
       <PostLink to={`/post/${id}`}>
         <ContentWapper>
           <p>{postcontent}</p>

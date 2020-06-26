@@ -1,4 +1,4 @@
-export const addPost = (postText, postImage, username) => (
+export const addPost = (postText, postImage, username, profile) => (
   dispatch,
   getState,
   { getFirebase, getFirestore }
@@ -15,6 +15,7 @@ export const addPost = (postText, postImage, username) => (
     createAt: new Date(),
     username: username,
     useruid: state.firebase.auth.uid,
+    userprofile: profile === "" ? "" : profile,
   };
 
   firestore
@@ -43,7 +44,7 @@ export const addPost = (postText, postImage, username) => (
       }
     });
 };
-export const addPostComment = (comment, name, postid) => (
+export const addPostComment = (comment, name, postid, image) => (
   dispatch,
   getState,
   { getFirebase, getFirestore }
@@ -58,6 +59,7 @@ export const addPostComment = (comment, name, postid) => (
     createAt: new Date(),
     postid,
     likes: [],
+    commenteduserprofile: image === "false" ? "" : image,
   };
   firestore
     .collection("posts")

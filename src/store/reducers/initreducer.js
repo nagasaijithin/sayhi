@@ -17,7 +17,8 @@ const InitReducer = (state = initState, action) => {
       return { ...state };
     case "GET_NAME":
       return {
-        name: action.payload,
+        name: action.payload.name,
+        profile: action.payload.profile,
       };
     default:
       return state;

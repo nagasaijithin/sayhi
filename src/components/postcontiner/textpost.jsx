@@ -7,7 +7,7 @@ import { Card } from "../../style/ui/components";
 import moment from "moment";
 const ContentWapper = styled.div`
   margin: 1rem;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
 `;
 
 const PostLink = styled(Link)`
@@ -22,6 +22,7 @@ const Textpost = (props) => {
     postcontent,
     username,
     id,
+    userprofile,
     useruid,
   } = props;
 
@@ -31,7 +32,12 @@ const Textpost = (props) => {
       : moment(createAt.toDate()).fromNow();
   return (
     <Card>
-      <Postheader date={date} username={username} userid={useruid} />
+      <Postheader
+        date={date}
+        username={username}
+        userid={useruid}
+        userprofile={userprofile}
+      />
       <PostLink to={`/post/${id}`}>
         <ContentWapper>
           <p>{postcontent}</p>

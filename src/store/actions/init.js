@@ -67,7 +67,12 @@ export const getusername = () => (
     .then((doc) => {
       if (doc.exists) {
         const name = doc.data().firstname + " " + doc.data().lastname;
-        dispatch({ type: "GET_NAME", payload: name });
+        const profile = doc.data().profile;
+        const payload = {
+          name: name,
+          profile: profile,
+        };
+        dispatch({ type: "GET_NAME", payload: payload });
       }
     });
 };
@@ -94,22 +99,36 @@ export const editeProfile = (profileimg, userData) => (
   { getFirebase, getFirestore }
 ) => {
   const firebase = getFirebase();
+  const firestore = getFirestore();
   const state = getState();
   if (profileimg.value === "") {
     dispatch(editeuserName(false, userData));
+    history.push(`profile/${state.firebase.auth.uid}`);
   } else {
     let storageRef = firebase.storage().ref();
     storageRef
       .child("profile/" + state.firebase.auth.uid)
       .put(profileimg.files[0])
-      .then(
+      .then(() => {
         storageRef
-          .child("profile/" + state.firebase.auth.uid)
+          .child("/profile/" + state.firebase.auth.uid)
           .getDownloadURL()
           .then((url) => {
+            firestore
+              .collection("posts")
+              .where("useruid", "==", state.firebase.auth.uid)
+              .get()
+              .then((doc) => {
+                doc.forEach((ele) => {
+                  firestore.collection("posts").doc(ele.id).update({
+                    userprofile: url,
+                  });
+                });
+              });
             dispatch(editeuserName(url, userData));
-          })
-      );
+            history.push(`/profile/${state.firebase.auth.uid}`);
+          });
+      });
   }
 };
 export const editeuserName = (image, userData) => (
@@ -126,7 +145,7 @@ export const editeuserName = (image, userData) => (
     .then((doc) => {
       if (doc.exists) {
         let storeddata = doc.data();
-        let { firstname, lastname, bio } = storeddata;
+        let { firstname, lastname, bio, userprofile } = storeddata;
         let editfirstname = userData.firstname;
         let editlastname = userData.lastname;
         let editbio = userData.bio;
@@ -137,7 +156,11 @@ export const editeuserName = (image, userData) => (
             firstname: editfirstname === "" ? firstname : editfirstname,
             lastname: editlastname === "" ? lastname : editlastname,
             bio: editbio === "" ? bio : editbio,
-            profile: image ? image : "false",
+            profile: image
+              ? image
+              : userprofile === "false"
+              ? "false"
+              : userprofile,
           })
           .then(() => {
             let editfirstname = userData.firstname;

@@ -81,8 +81,25 @@ class Editprofile extends React.Component {
   }
   formHandler = (e) => {
     e.preventDefault();
-
-    this.props.editeProfile(e.target.profile, this.state);
+    const { firstname, lastname, bio } = this.state;
+    if (
+      firstname !== "" ||
+      lastname !== "" ||
+      bio !== "" ||
+      e.target.profile.value !== ""
+    ) {
+      this.props.editeProfile(e.target.profile, this.state);
+      let reset = {
+        firstname: "",
+        lastname: "",
+        bio: "",
+      };
+      this.setState({
+        ...reset,
+      });
+    } else {
+      console.log("error");
+    }
   };
   inputHandler = (e) => {
     this.setState({

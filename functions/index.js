@@ -23,3 +23,24 @@ exports.commentCounter = functions.firestore
         });
       });
   });
+const createNotification = (obj) => {
+  return admin
+    .firestore()
+    .collection("notifications")
+    .add({
+      ...obj,
+    });
+};
+exports.postnotification = functions.firestore
+  .document("posts/{postsId}")
+  .onCreate((doc) => {
+    const data = doc.data();
+    const notificationObj = {
+      userProfile: data.userprofile,
+      username: data.username,
+      msg: "Add The New Post",
+      createAt: new Date(),
+      useruid: data.useruid,
+    };
+    return createNotification(notificationObj);
+  });

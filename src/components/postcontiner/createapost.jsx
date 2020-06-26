@@ -24,6 +24,7 @@ const PersonWapper = styled.div`
     & > img {
       height: 100%;
       width: 100%;
+      border-radius: 50%;
     }
   }
   & > h2 {
@@ -77,11 +78,13 @@ const Createapost = ({ addPost, users, uid }) => {
       }
       return ac;
     }, "User Name not Diffined");
+  const profile = users && users[0].profile;
+
   const formHandler = (e) => {
     e.preventDefault();
     e.persist();
     if (e.target.postText.value !== "") {
-      addPost(e.target.postText.value, e.target.postImage, userName);
+      addPost(e.target.postText.value, e.target.postImage, userName, profile);
       settextVal("");
       setimageVal(false);
     }
@@ -92,11 +95,16 @@ const Createapost = ({ addPost, users, uid }) => {
   const inputHandler = (e) => {
     settextVal(e.target.value);
   };
+
   return (
     <CreatePostWapper>
       <PersonWapper>
         <div>
-          <img src={`https://robohash.org/${userName}`} alt={userName} />
+          {profile === "false" ? (
+            <img src={`https://robohash.org/${userName}`} alt={userName} />
+          ) : (
+            <img src={profile} alt={userName} />
+          )}
         </div>
         <h2>{userName}</h2>
       </PersonWapper>
@@ -130,8 +138,10 @@ const mapStateToProps = (state) => {
   };
 };
 export default compose(
-  firestoreConnect(() => ["users"]),
   connect(mapStateToProps, {
     addPost,
+  }),
+  firestoreConnect((props) => {
+    return [{ collection: "users", doc: props.uid }];
   })
 )(Createapost);

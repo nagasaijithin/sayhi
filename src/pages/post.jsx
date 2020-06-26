@@ -37,8 +37,10 @@ const Post = ({
   postcomments,
   getusername,
   curusername,
+  curuserprofile,
   liketheComment,
 }) => {
+  console.log(curuserprofile);
   const uid = firebase.auth.uid;
   useEffect(() => {
     getusername();
@@ -50,10 +52,9 @@ const Post = ({
     posts && posts.filter((post) => post.id === match.params.id);
   const commentHandler = (value) => {
     const { id } = postContent[0];
-    addPostComment(value, curusername, id);
+    addPostComment(value, curusername, id, curuserprofile);
   };
   const likeaComment = (postid, id, cond) => {
-    console.log("hi");
     liketheComment(postid, id, cond);
   };
   return (
@@ -70,7 +71,12 @@ const Post = ({
 
         <Card>
           <div>
-            <Postheader timeshow={true} username={curusername} />
+            <Postheader
+              userid={uid}
+              timeshow={true}
+              username={curusername}
+              userprofile={curuserprofile}
+            />
           </div>
           <Inputandbutton
             placeholder="Write you'r comment"
@@ -80,11 +86,23 @@ const Post = ({
           <h1>Comments</h1>
           {postcomments &&
             postcomments.map((commentdata, i) => {
-              const { id, username, comment, postid, likes } = commentdata;
+              const {
+                id,
+                username,
+                comment,
+                postid,
+                likes,
+                userid,
+                commenteduserprofile,
+              } = commentdata;
               const cond = likes.some((like) => like === uid);
               return (
                 <CommentWapper key={i}>
-                  <Postheader username={username} />
+                  <Postheader
+                    userid={userid}
+                    username={username}
+                    userprofile={commenteduserprofile}
+                  />
                   <p>{comment}</p>
                   <span onClick={() => likeaComment(postid, id, cond)}>
                     {cond ? "unlike" : "Like"} {likes.length}
@@ -104,6 +122,7 @@ const mapStateToProps = (state) => {
     posts: state.firestore.ordered.posts,
     postcomments: state.firestore.ordered.comments,
     curusername: state.init.name,
+    curuserprofile: state.init.profile,
   };
 };
 export default compose(
