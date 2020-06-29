@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import Postheader from "../components/postcontiner/postheader";
 import Inputandbutton from "../components/inputandbutton";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { getnameandprofile, sendmsg } from "../store/actions/init";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -65,12 +68,12 @@ const SideMessageWapper = styled.div`
     }
     & > ul {
       height: 69vh;
-
       display: flex;
       flex-direction: column;
-      & li:nth-child(even) {
+      & .even {
         align-self: flex-end;
         border-radius: 30px 30px 0px 30px;
+        background: rgba(66, 141, 255, 0.86);
       }
       & > li {
         background: var(--secondColor);
@@ -99,95 +102,106 @@ const StartingInbox = styled.div`
     font-size: 1.5rem;
   }
 `;
-const Messages = (props) => {
-  const uid = props.firebase.auth.uid;
+function useTheUsercome(user, mathod, uid) {
+  useEffect(() => {
+    user &&
+      user[0].followers.forEach((data) => {
+        mathod(data);
+      });
+  }, [user, mathod, uid]);
+}
+const Messages = ({
+  friendslist,
+  userfirebase,
+  user,
+  getnameandprofile,
+  match,
+  sendmsg,
+  msglist,
+}) => {
+  let chatWapperref = useRef();
+  let chatContinerref = useRef();
+  const uid = userfirebase.auth.uid;
+  useTheUsercome(user, getnameandprofile, uid);
   if (!uid) {
     return <Redirect to="/login" />;
   }
 
-  const mSize = props.match.params.uid ? true : false;
+  const mSize = match.params.uid ? true : false;
+  const getmsgValue = (value) => {
+    sendmsg(value, match.params.uid);
+  };
+
+  let mainMsgs = msglist ? msglist : [];
+  if (mainMsgs) {
+    if (chatWapperref.current && chatContinerref.current) {
+      chatWapperref.current.scrollTop = chatContinerref.current.scrollHeight;
+      console.log(chatWapperref.current.scrollHeight);
+    }
+  }
   return (
     <MessageWapper changeGrid={mSize}>
       <div className="first-element">
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hello"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"How are you?"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"namaste anna "} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"am sangathi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
-        <div>
-          <Postheader message={"hi"} path="/messages/654" />
-        </div>
+        {friendslist.map((data, i) => {
+          return (
+            <div key={i}>
+              <Postheader
+                message={"hi"}
+                userid={data.uid}
+                username={data.name}
+                userprofile={data.profile}
+                lessthetext={true}
+                path={`/messages/${data.uid}`}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="last-element">
-        {props.match.params.uid ? (
+        {match.params.uid ? (
           <SideMessageWapper>
             <div className="message-head">
-              <Postheader timeshow={true} />
+              {friendslist.map((data, i) => {
+                if (data.uid === match.params.uid) {
+                  return (
+                    <Postheader
+                      userid={data.uid}
+                      username={data.name}
+                      userprofile={data.profile}
+                      key={i}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              })}
             </div>
-            <div className="chat-wapper">
-              <ul>
-                <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>How are you</li> <li>hi</li>
-                <li>hi!</li>
-                <li>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Iure, molestiae velit delectus numquam consequatur quas dolore
-                  cumque ratione? Deleniti incidunt id animi repudiandae odio
-                  laudantium, voluptas repellendus eum corporis maiores
-                  accusamus molestias quae eos. Laborum, dolores velit? Non
-                  numquam excepturi porro ducimus delectus, ab temporibus saepe
-                  dicta voluptas dolorum. Odit voluptas ut, nulla rem numquam
-                  non ducimus ea. Consequatur laudantium minima qui praesentium
-                  veritatis quaerat voluptate maiores. Ab aspernatur perferendis
-                  temporibus necessitatibus dignissimos et praesentium eaque
-                  sint! Officiis doloribus velit harum itaque officia voluptatum
-                  a laudantium dolorem omnis similique ut, eos quibusdam
-                  repellendus est illo quisquam sapiente fugit debitis maiores.
-                </li>
+            <div className="chat-wapper" ref={chatWapperref}>
+              <ul ref={chatContinerref}>
+                {mainMsgs.length > 0 ? (
+                  mainMsgs[0].msg.map((data, i) => {
+                    if (data.uid === uid) {
+                      return (
+                        <li className="even" key={i}>
+                          {data.msg}
+                        </li>
+                      );
+                    } else {
+                      return <li key={i}>{data.msg}</li>;
+                    }
+                  })
+                ) : (
+                  <StartingInbox>
+                    <h1>Send private messages to friend .</h1>
+                  </StartingInbox>
+                )}
               </ul>
             </div>
             <div>
               <Inputandbutton
                 placeholder="Enter you'r message"
                 buttonContent="Send"
+                method={getmsgValue}
               />
             </div>
           </SideMessageWapper>
@@ -207,7 +221,50 @@ const Messages = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    firebase: state.firebase,
+    userfirebase: state.firebase,
+    user: state.firestore.ordered.users,
+    friendslist: state.userfriends.friends,
+    msglist: state.firestore.ordered.chats,
   };
 };
-export default connect(mapStateToProps)(Messages);
+export default compose(
+  connect(mapStateToProps, {
+    getnameandprofile,
+    sendmsg,
+  }),
+  firestoreConnect((props) => {
+    let flag;
+    if (props.match.params.uid) {
+      if (props.msglist) {
+        if (props.msglist.length === 0) {
+          const id = `${props.userfirebase.auth.uid}${props.match.params.uid}`;
+          flag = id;
+          return [
+            {
+              collection: "chats",
+              doc: id,
+            },
+          ];
+        } else if (props.msglist[0].id) {
+          return [
+            {
+              collection: "chats",
+              doc: flag,
+            },
+          ];
+        }
+      } else {
+        const swapID = `${props.match.params.uid}${props.userfirebase.auth.uid}`;
+        flag = swapID;
+        return [
+          {
+            collection: "chats",
+            doc: swapID,
+          },
+        ];
+      }
+    } else {
+      return [];
+    }
+  })
+)(Messages);

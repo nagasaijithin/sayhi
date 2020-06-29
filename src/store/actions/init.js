@@ -33,6 +33,7 @@ export const createNewUser = (data) => (
         bio: "There is no bio yet",
         followers: [],
         profile: "false",
+        noticationtime: new Date(),
       });
     })
     .then(() => {
@@ -180,6 +181,90 @@ export const editeuserName = (image, userData) => (
                       });
                   });
                 });
+            }
+          });
+      }
+    });
+};
+
+export const addnotificationtime = () => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const state = getState();
+  const firestore = getFirestore();
+  firestore.collection("users").doc(state.firebase.auth.uid).update({
+    noticationtime: new Date(),
+  });
+};
+
+export const getnameandprofile = (uid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  firestore
+    .collection("users")
+    .doc(uid)
+    .get()
+    .then((doc) => {
+      const data = doc.data();
+      const stateUseinfo = {
+        name: data.firstname + " " + data.lastname,
+        profile: data.profile,
+        uid: data.userid,
+      };
+      dispatch({ type: "GET_FRIEND", payload: stateUseinfo });
+    })
+    .catch((err) => {
+      // dispatch({ type: "GET_FIREND_ERROR", payload: err });
+    });
+};
+export const sendmsg = (msg, friendid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  const state = getState();
+  const data = {
+    createAt: new Date(),
+    msg: msg,
+    uid: state.firebase.auth.uid,
+  };
+  const newid = `${state.firebase.auth.uid}${friendid}`;
+  firestore
+    .collection("chats")
+    .doc(newid)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        firestore
+          .collection("chats")
+          .doc(newid)
+          .update({
+            msg: firestore.FieldValue.arrayUnion(data),
+          });
+      } else {
+        const swaptheId = `${friendid}${state.firebase.auth.uid}`;
+        firestore
+          .collection("chats")
+          .doc(swaptheId)
+          .get()
+          .then((anotherdoc) => {
+            if (anotherdoc.exists) {
+              firestore
+                .collection("chats")
+                .doc(swaptheId)
+                .update({
+                  msg: firestore.FieldValue.arrayUnion(data),
+                });
+            } else {
+              firestore.collection("chats").doc(swaptheId).set({
+                msg: [],
+              });
             }
           });
       }

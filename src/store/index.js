@@ -1,6 +1,6 @@
 import InitReducer from "./reducers/initreducer";
 import getPostReducer from "./reducers/getpostreducer.js";
-
+import getFriends from "./reducers/getfriends";
 import { combineReducers, createStore, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 
@@ -11,6 +11,7 @@ import { firebaseReducer } from "react-redux-firebase";
 import fbConfig from "../firebase/fbconfig";
 const state = combineReducers({
   init: InitReducer,
+  userfriends: getFriends,
   posts: getPostReducer,
   firebase: firebaseReducer,
   firestore: firestoreReducer,

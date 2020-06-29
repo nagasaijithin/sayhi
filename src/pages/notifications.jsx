@@ -25,6 +25,7 @@ const NotificationsWapper = styled.div`
 `;
 const Notifications = ({ firebase, notifications }) => {
   const uid = firebase.auth.uid;
+
   if (!uid) {
     return <Redirect to="/login" />;
   }

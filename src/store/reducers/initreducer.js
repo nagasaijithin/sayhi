@@ -20,6 +20,7 @@ const InitReducer = (state = initState, action) => {
         name: action.payload.name,
         profile: action.payload.profile,
       };
+
     default:
       return state;
   }

@@ -38,6 +38,7 @@ const Postheader = ({
   username,
   userid,
   userprofile,
+  lessthetext,
 }) => {
   return (
     <PersonWapper>
@@ -50,7 +51,7 @@ const Postheader = ({
       </Link>
       <div>
         <Link to={path ? path : `/profile/${userid}`}>
-          <h2>{username}</h2>
+          <h2>{lessthetext ? username.substr(0, 10) + "..." : username}</h2>
         </Link>
         {timeshow ? null : <span>{message ? message : date}</span>}
       </div>

@@ -11,6 +11,11 @@ import login from "../../svg/login.svg";
 import createaccount from "../../svg/createaccount.svg";
 
 import { connect } from "react-redux";
+import { addnotificationtime } from "../../store/actions/init";
+import moment from "moment";
+import { firestoreConnect } from "react-redux-firebase";
+import { compose } from "redux";
+
 const Spanani = keyframes`
   0%{
     bottom: 5px;
@@ -40,6 +45,16 @@ const MainLinksWapper = styled.div`
 
     & > li {
       list-style-type: none;
+      position: relative;
+      & > div {
+        height: 10px;
+        width: 10px;
+        background: rgba(240, 99, 99, 0.96);
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-radius: 50%;
+      }
       & > a {
         position: relative;
         & > img {
@@ -82,35 +97,69 @@ const LinkName = styled.span`
   }
 `;
 
-const NavLinks = (props) => {
-  const uid = props.firebase.auth.uid;
+const NavLinks = ({
+  addnotificationtime,
+  loginuserInfo,
+  notifications,
+  user,
+}) => {
+  const uid = loginuserInfo.auth.uid;
+  const Notging = () => {};
+  const setNotificationTime = () => {
+    addnotificationtime();
+  };
   const Loginlinks = [
-    { icon: home, title: "Home", path: "/" },
-    { icon: person, title: "Profile", path: `/profile/${uid}` },
-    { icon: notification, title: "Notifications", path: "/notifications" },
-    { icon: message, title: "Message", path: "/messages" },
-    { icon: logout, title: "Logout", path: "/logout" },
+    { icon: home, title: "Home", path: "/", method: Notging },
+    {
+      icon: person,
+      title: "Profile",
+      path: `/profile/${uid}`,
+      method: Notging,
+    },
+    {
+      icon: notification,
+      title: "Notifications",
+      path: "/notifications",
+      method: setNotificationTime,
+      unreadicon: true,
+    },
+    { icon: message, title: "Message", path: "/messages", method: Notging },
+    { icon: logout, title: "Logout", path: "/logout", method: Notging },
   ];
 
   const NotloginLinks = [
-    { icon: login, title: "Login", path: "/login" },
+    { icon: login, title: "Login", path: "/login", method: Notging },
     {
       icon: createaccount,
       title: "Signup",
       path: "/signup",
+      method: Notging,
     },
   ];
   const Links = uid ? Loginlinks : NotloginLinks;
+
+  const userLastSee =
+    user && moment(user[0].noticationtime.toDate()).format("hh:mm:ss");
+  const newPostAddTime =
+    notifications &&
+    moment(notifications[0].createAt.toDate()).format("hh:mm:ss");
+  const userseeNotifiorNot =
+    newPostAddTime &&
+    userLastSee &&
+    newPostAddTime.toString() > userLastSee.toString();
+
   return (
     <>
       <MainLinksWapper>
         <ul>
-          {Links.map(({ icon, title, path }, i) => (
-            <li key={i}>
+          {Links.map(({ icon, title, path, method, unreadicon }, i) => (
+            <li key={i} onClick={method}>
               <Link to={path}>
                 <img src={icon} alt={title} />
                 <LinkName>{title}</LinkName>
               </Link>
+
+              {unreadicon && userseeNotifiorNot ? <div></div> : null}
             </li>
           ))}
         </ul>
@@ -120,7 +169,20 @@ const NavLinks = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    firebase: state.firebase,
+    loginuserInfo: state.firebase,
+    notifications: state.firestore.ordered.notifications,
+    user: state.firestore.ordered.users,
+    userid: state.firebase.auth.uid,
   };
 };
-export default connect(mapStateToProps)(NavLinks);
+export default compose(
+  connect(mapStateToProps, {
+    addnotificationtime,
+  }),
+  firestoreConnect((props) => {
+    return [
+      { collection: "notifications", orderBy: ["createAt", "desc"] },
+      { collection: "users", doc: props.userid },
+    ];
+  })
+)(NavLinks);
