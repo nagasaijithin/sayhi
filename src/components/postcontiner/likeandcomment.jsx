@@ -58,7 +58,7 @@ const Likeandcomment = ({
         )}
         <span>{likes} Likes</span>
       </div>
-      <Link to={`post/${postid}`}>
+      <Link to={`/post/${postid}`}>
         <img src={commenticon} alt="commenticon" />
         <span>{comments} comments</span>
       </Link>

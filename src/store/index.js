@@ -1,5 +1,5 @@
 import InitReducer from "./reducers/initreducer";
-import getPostReducer from "./reducers/getpostreducer.js";
+import getProfileReducer from "./reducers/getprofilereducer.js";
 import getFriends from "./reducers/getfriends";
 import { combineReducers, createStore, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
@@ -12,7 +12,7 @@ import fbConfig from "../firebase/fbconfig";
 const state = combineReducers({
   init: InitReducer,
   userfriends: getFriends,
-  posts: getPostReducer,
+  fullprofile: getProfileReducer,
   firebase: firebaseReducer,
   firestore: firestoreReducer,
 });

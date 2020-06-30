@@ -40,7 +40,6 @@ const Post = ({
   curuserprofile,
   liketheComment,
 }) => {
-  console.log(curuserprofile);
   const uid = firebase.auth.uid;
   useEffect(() => {
     getusername();

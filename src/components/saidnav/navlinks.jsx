@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 // / all icons link
@@ -11,7 +11,7 @@ import login from "../../svg/login.svg";
 import createaccount from "../../svg/createaccount.svg";
 
 import { connect } from "react-redux";
-import { addnotificationtime } from "../../store/actions/init";
+import { addnotificationtime, getfullUserdata } from "../../store/actions/init";
 import moment from "moment";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
@@ -96,14 +96,21 @@ const LinkName = styled.span`
     transform: rotate(136deg);
   }
 `;
-
+function useGetUserData(uid, mathod) {
+  useEffect(() => {
+    uid && mathod(uid);
+  }, [uid, mathod]);
+}
 const NavLinks = ({
   addnotificationtime,
   loginuserInfo,
   notifications,
   user,
+  getfullUserdata,
 }) => {
   const uid = loginuserInfo.auth.uid;
+
+  useGetUserData(uid, getfullUserdata);
   const Notging = () => {};
   const setNotificationTime = () => {
     addnotificationtime();
@@ -139,7 +146,7 @@ const NavLinks = ({
   const Links = uid ? Loginlinks : NotloginLinks;
 
   const userLastSee =
-    user && moment(user[0].noticationtime.toDate()).format("hh:mm:ss");
+    user && moment(user.noticationtime.toDate()).format("hh:mm:ss");
   const newPostAddTime =
     notifications &&
     moment(notifications[0].createAt.toDate()).format("hh:mm:ss");
@@ -171,18 +178,16 @@ const mapStateToProps = (state) => {
   return {
     loginuserInfo: state.firebase,
     notifications: state.firestore.ordered.notifications,
-    user: state.firestore.ordered.users,
+    user: state.fullprofile,
     userid: state.firebase.auth.uid,
   };
 };
 export default compose(
   connect(mapStateToProps, {
     addnotificationtime,
+    getfullUserdata,
   }),
   firestoreConnect((props) => {
-    return [
-      { collection: "notifications", orderBy: ["createAt", "desc"] },
-      { collection: "users", doc: props.userid },
-    ];
+    return [{ collection: "notifications", orderBy: ["createAt", "desc"] }];
   })
 )(NavLinks);

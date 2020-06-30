@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { getnameandprofile, sendmsg } from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
+
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -104,10 +105,14 @@ const StartingInbox = styled.div`
 `;
 function useTheUsercome(user, mathod, uid) {
   useEffect(() => {
-    user &&
-      user[0].followers.forEach((data) => {
-        mathod(data);
+    if (user) {
+      const mainuser = user.filter((data) => data.userid === uid);
+      mainuser.forEach((ele) => {
+        ele.followers.forEach((data) => {
+          mathod(data);
+        });
       });
+    }
   }, [user, mathod, uid]);
 }
 const Messages = ({
@@ -121,22 +126,23 @@ const Messages = ({
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
+  console.log(user);
   const uid = userfirebase.auth.uid;
   useTheUsercome(user, getnameandprofile, uid);
   if (!uid) {
     return <Redirect to="/login" />;
   }
-
   const mSize = match.params.uid ? true : false;
   const getmsgValue = (value) => {
     sendmsg(value, match.params.uid);
   };
 
   let mainMsgs = msglist ? msglist : [];
-  if (mainMsgs) {
+  if (mainMsgs.length > 0) {
     if (chatWapperref.current && chatContinerref.current) {
-      chatWapperref.current.scrollTop = chatContinerref.current.scrollHeight;
-      console.log(chatWapperref.current.scrollHeight);
+      setTimeout(() => {
+        chatWapperref.current.scrollTop = chatWapperref.current.scrollHeight;
+      }, 1000);
     }
   }
   return (
@@ -222,6 +228,7 @@ const Messages = ({
 const mapStateToProps = (state) => {
   return {
     userfirebase: state.firebase,
+    userid: state.firebase.auth.uid,
     user: state.firestore.ordered.users,
     friendslist: state.userfriends.friends,
     msglist: state.firestore.ordered.chats,
@@ -237,13 +244,14 @@ export default compose(
     if (props.match.params.uid) {
       if (props.msglist) {
         if (props.msglist.length === 0) {
-          const id = `${props.userfirebase.auth.uid}${props.match.params.uid}`;
+          const id = `${props.userid}${props.match.params.uid}`;
           flag = id;
           return [
             {
               collection: "chats",
               doc: id,
             },
+            { collection: "users", doc: props.userid },
           ];
         } else if (props.msglist[0].id) {
           return [
@@ -251,20 +259,22 @@ export default compose(
               collection: "chats",
               doc: flag,
             },
+            { collection: "users", doc: props.userid },
           ];
         }
       } else {
-        const swapID = `${props.match.params.uid}${props.userfirebase.auth.uid}`;
+        const swapID = `${props.match.params.uid}${props.userid}`;
         flag = swapID;
         return [
           {
             collection: "chats",
             doc: swapID,
           },
+          { collection: "users", doc: props.userid },
         ];
       }
     } else {
-      return [];
+      return [{ collection: "users", doc: props.userid }];
     }
   })
 )(Messages);

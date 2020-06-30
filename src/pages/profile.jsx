@@ -157,7 +157,6 @@ const mapStateToProps = (state) => {
 };
 export default compose(
   firestoreConnect((props) => {
-    console.log(props);
     return [
       { collection: "posts", orderBy: ["createAt", "desc"] },
       { collection: "users", doc: props.match.params.id },

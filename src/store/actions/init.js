@@ -1,4 +1,5 @@
 import history from "../../history";
+
 export const userLogin = (data) => (
   dispatch,
   getState,
@@ -216,7 +217,7 @@ export const getnameandprofile = (uid) => (
         profile: data.profile,
         uid: data.userid,
       };
-      dispatch({ type: "GET_FRIEND", payload: stateUseinfo });
+      dispatch({ type: "GET_FRIENDS", payload: stateUseinfo });
     })
     .catch((err) => {
       // dispatch({ type: "GET_FIREND_ERROR", payload: err });
@@ -267,6 +268,23 @@ export const sendmsg = (msg, friendid) => (
               });
             }
           });
+      }
+    });
+};
+
+export const getfullUserdata = (uid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  firestore
+    .collection("users")
+    .doc(uid)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        dispatch({ type: "GET_PROFILE", payload: doc.data() });
       }
     });
 };

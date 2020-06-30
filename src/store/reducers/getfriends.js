@@ -1,7 +1,7 @@
 const initState = { friends: [] };
 const getFriends = (state = initState, action) => {
   switch (action.type) {
-    case "GET_FRIEND":
+    case "GET_FRIENDS":
       if (state.friends.length <= 0) {
         state.friends.push(action.payload);
         return { ...state };
