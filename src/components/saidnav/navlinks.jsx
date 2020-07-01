@@ -154,7 +154,9 @@ const NavLinks = ({
     newPostAddTime &&
     userLastSee &&
     newPostAddTime.toString() > userLastSee.toString();
-
+  console.log(userseeNotifiorNot);
+  console.log(newPostAddTime);
+  console.log(userLastSee);
   return (
     <>
       <MainLinksWapper>

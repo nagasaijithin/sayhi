@@ -6,6 +6,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
+import Loading from "../components/loading";
 import moment from "moment";
 const ContentContiner = styled.div`
   display: flex;
@@ -29,10 +30,10 @@ const Notifications = ({ firebase, notifications }) => {
   if (!uid) {
     return <Redirect to="/login" />;
   }
-  return (
-    <NotificationsWapper>
-      {notifications &&
-        notifications.map((data, i) => {
+  if (notifications) {
+    return (
+      <NotificationsWapper>
+        {notifications.map((data, i) => {
           const { createAt, msg, userProfile, useruid, username } = data;
           return (
             <ContentContiner key={i}>
@@ -47,8 +48,11 @@ const Notifications = ({ firebase, notifications }) => {
             </ContentContiner>
           );
         })}
-    </NotificationsWapper>
-  );
+      </NotificationsWapper>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 
 const mapStateToProps = (state) => {

@@ -126,7 +126,6 @@ const Messages = ({
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
-  console.log(user);
   const uid = userfirebase.auth.uid;
   useTheUsercome(user, getnameandprofile, uid);
   if (!uid) {

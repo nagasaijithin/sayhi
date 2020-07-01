@@ -105,7 +105,7 @@ export const editeProfile = (profileimg, userData) => (
   const state = getState();
   if (profileimg.value === "") {
     dispatch(editeuserName(false, userData));
-    history.push(`profile/${state.firebase.auth.uid}`);
+    history.push(`/profile/${state.firebase.auth.uid}`);
   } else {
     let storageRef = firebase.storage().ref();
     storageRef
@@ -147,22 +147,23 @@ export const editeuserName = (image, userData) => (
     .then((doc) => {
       if (doc.exists) {
         let storeddata = doc.data();
-        let { firstname, lastname, bio, userprofile } = storeddata;
+        let { firstname, lastname, bio, profile, userid } = storeddata;
         let editfirstname = userData.firstname;
         let editlastname = userData.lastname;
         let editbio = userData.bio;
+        const editUserProfile = image
+          ? image
+          : profile === "false"
+          ? "false"
+          : profile;
         return firestore
           .collection("users")
-          .doc(state.firebase.auth.uid)
+          .doc(userid)
           .update({
             firstname: editfirstname === "" ? firstname : editfirstname,
             lastname: editlastname === "" ? lastname : editlastname,
             bio: editbio === "" ? bio : editbio,
-            profile: image
-              ? image
-              : userprofile === "false"
-              ? "false"
-              : userprofile,
+            profile: editUserProfile,
           })
           .then(() => {
             let editfirstname = userData.firstname;

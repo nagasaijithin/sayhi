@@ -16,6 +16,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import { followAuser } from "../store/actions/init";
+import Loading from "../components/loading";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
   font-size: 1.7rem;
@@ -74,64 +75,66 @@ const Profile = ({ posts, firebase, user, match, followAuser }) => {
     return <Redirect to="/login" />;
   }
   const viewuserid = match.params.id;
-  let username = user && user[0].firstname + " " + user[0].lastname;
-  let bio = user && user[0].bio;
-  let followers = user && user[0].followers;
-  let loginuserFollowOrNot =
-    user && user[0].followers.some((data) => data === loginuid);
-  let profile = user && user[0].profile;
-  return (
-    <>
-      <ProfileContentWapper>
-        <div className="userinfo">
-          <ImageWapper>
-            {profile === "false" ? (
-              <img src={`https://robohash.org/${username}`} alt={username} />
-            ) : (
-              <img src={profile} alt={username} />
-            )}
-          </ImageWapper>
-          <h2>{username}</h2>
-          <p>{bio}</p>
-          <div>
-            {loginuid === viewuserid ? (
-              <>
-                <LinkWapper to={`/editprofile/${viewuserid}`}>
-                  Edit you'r Profile
-                </LinkWapper>
-                <ButtonWapper>
-                  Followers {followers && followers.length}
-                </ButtonWapper>
-              </>
-            ) : (
-              <>
-                <ButtonWapper
-                  onClick={() =>
-                    followAuser(match.params.id, loginuid, loginuserFollowOrNot)
-                  }
-                >
-                  {loginuserFollowOrNot ? "Unfollow" : "Follow"}
-                </ButtonWapper>
-                <ButtonWapper>
-                  Followers {followers && followers.length}
-                </ButtonWapper>
-                {loginuserFollowOrNot && (
-                  <LinkWapper to={`/messages/${viewuserid}`}>
-                    Message
+  const oldUserarenot = user && user[0].id === viewuserid;
+  if (user && posts && oldUserarenot) {
+    let username = user[0].firstname + " " + user[0].lastname;
+    let bio = user[0].bio;
+    let followers = user[0].followers;
+    let loginuserFollowOrNot = user[0].followers.some(
+      (data) => data === loginuid
+    );
+    let profile = user[0].profile;
+    return (
+      <>
+        <ProfileContentWapper>
+          <div className="userinfo">
+            <ImageWapper>
+              {profile === "false" ? (
+                <img src={`https://robohash.org/${username}`} alt={username} />
+              ) : (
+                <img src={profile} alt={username} />
+              )}
+            </ImageWapper>
+            <h2>{username}</h2>
+            <p>{bio}</p>
+            <div>
+              {loginuid === viewuserid ? (
+                <>
+                  <LinkWapper to={`/editprofile/${viewuserid}`}>
+                    Edit you'r Profile
                   </LinkWapper>
-                )}
-              </>
-            )}
+                  <ButtonWapper>Followers {followers.length}</ButtonWapper>
+                </>
+              ) : (
+                <>
+                  <ButtonWapper
+                    onClick={() =>
+                      followAuser(
+                        match.params.id,
+                        loginuid,
+                        loginuserFollowOrNot
+                      )
+                    }
+                  >
+                    {loginuserFollowOrNot ? "Unfollow" : "Follow"}
+                  </ButtonWapper>
+                  <ButtonWapper>Followers {followers.length}</ButtonWapper>
+                  {loginuserFollowOrNot && (
+                    <LinkWapper to={`/messages/${viewuserid}`}>
+                      Message
+                    </LinkWapper>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </ProfileContentWapper>
-      <UserPostWapper>
-        <h2>{username} Post's</h2>
-        <CardsWapper>
-          <CardContiner>
-            {loginuid === viewuserid && <Createapost />}
-            {posts &&
-              posts.map((data, i) => {
+        </ProfileContentWapper>
+        <UserPostWapper>
+          <h2>{username} Post's</h2>
+          <CardsWapper>
+            <CardContiner>
+              {loginuid === viewuserid && <Createapost />}
+              {posts.map((data, i) => {
                 if (data.useruid === viewuserid) {
                   return data.image !== "false" ? (
                     <Postwithimage key={i} {...data} />
@@ -141,11 +144,14 @@ const Profile = ({ posts, firebase, user, match, followAuser }) => {
                 }
                 return "";
               })}
-          </CardContiner>
-        </CardsWapper>
-      </UserPostWapper>
-    </>
-  );
+            </CardContiner>
+          </CardsWapper>
+        </UserPostWapper>
+      </>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 
 const mapStateToProps = (state) => {

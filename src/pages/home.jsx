@@ -3,6 +3,7 @@ import React from "react";
 import Createapost from "../components/postcontiner/createapost";
 import Textpost from "../components/postcontiner/textpost";
 import Postwithimage from "../components/postcontiner/postwithimage";
+import Loading from "../components/loading";
 
 import { CardsWapper, CardContiner } from "../style/ui/components";
 
@@ -16,21 +17,24 @@ const Home = ({ firebase, posts }) => {
   if (!uid) {
     return <Redirect to="/login" />;
   }
-  return (
-    <CardsWapper>
-      <CardContiner>
-        <Createapost />
-        {posts &&
-          posts.map((data, i) => {
+  if (posts) {
+    return (
+      <CardsWapper>
+        <CardContiner>
+          <Createapost />
+          {posts.map((data, i) => {
             return data.image !== "false" ? (
               <Postwithimage key={i} {...data} />
             ) : (
               <Textpost key={i} {...data} />
             );
           })}
-      </CardContiner>
-    </CardsWapper>
-  );
+        </CardContiner>
+      </CardsWapper>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 
 const mapStateToProps = (state) => {
