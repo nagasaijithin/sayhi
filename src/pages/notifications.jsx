@@ -23,6 +23,9 @@ const NotificationsWapper = styled.div`
   margin: 2rem auto;
   width: 70%;
   padding: 2rem 0;
+  @media ${(props) => props.theme.mediaQuires.lapMid2} {
+    width: 90%;
+  }
 `;
 const Notifications = ({ firebase, notifications }) => {
   const uid = firebase.auth.uid;

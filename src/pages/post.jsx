@@ -14,6 +14,7 @@ import { firestoreConnect } from "react-redux-firebase";
 
 import { addPostComment, liketheComment } from "../store/actions/posts";
 import { getusername } from "../store/actions/init";
+import Loading from "../components/loading";
 const CommentWapper = styled.div`
   margin: 2rem;
   & > p {
@@ -47,20 +48,18 @@ const Post = ({
   if (!uid) {
     return <Redirect to="/login" />;
   }
-  const postContent =
-    posts && posts.filter((post) => post.id === match.params.id);
-  const commentHandler = (value) => {
-    const { id } = postContent[0];
-    addPostComment(value, curusername, id, curuserprofile);
-  };
-  const likeaComment = (postid, id, cond) => {
-    liketheComment(postid, id, cond);
-  };
-  return (
-    <CardsWapper>
-      <CardContiner>
-        {postContent &&
-          postContent.map((post, i) => {
+  if (posts && postcomments) {
+    const commentHandler = (value) => {
+      const { id } = posts[0];
+      addPostComment(value, curusername, id, curuserprofile);
+    };
+    const likeaComment = (postid, id, cond) => {
+      liketheComment(postid, id, cond);
+    };
+    return (
+      <CardsWapper>
+        <CardContiner>
+          {posts.map((post, i) => {
             return post.image === "false" ? (
               <Textpost key={i} {...post} />
             ) : (
@@ -68,23 +67,22 @@ const Post = ({
             );
           })}
 
-        <Card>
-          <div>
-            <Postheader
-              userid={uid}
-              timeshow={true}
-              username={curusername}
-              userprofile={curuserprofile}
+          <Card>
+            <div>
+              <Postheader
+                userid={uid}
+                timeshow={true}
+                username={curusername}
+                userprofile={curuserprofile}
+              />
+            </div>
+            <Inputandbutton
+              placeholder="Write you'r comment"
+              buttonContent="Comment"
+              method={commentHandler}
             />
-          </div>
-          <Inputandbutton
-            placeholder="Write you'r comment"
-            buttonContent="Comment"
-            method={commentHandler}
-          />
-          <h1>Comments</h1>
-          {postcomments &&
-            postcomments.map((commentdata, i) => {
+            <h1>Comments</h1>
+            {postcomments.map((commentdata, i) => {
               const {
                 id,
                 username,
@@ -109,10 +107,13 @@ const Post = ({
                 </CommentWapper>
               );
             })}
-        </Card>
-      </CardContiner>
-    </CardsWapper>
-  );
+          </Card>
+        </CardContiner>
+      </CardsWapper>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 
 const mapStateToProps = (state) => {
@@ -129,7 +130,7 @@ export default compose(
     return [
       {
         collection: "posts",
-        orderBy: ["createAt", "desc"],
+        doc: props.match.params.id,
       },
       {
         collection: "posts",

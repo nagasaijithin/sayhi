@@ -146,17 +146,17 @@ const NavLinks = ({
   const Links = uid ? Loginlinks : NotloginLinks;
 
   const userLastSee =
-    user && moment(user.noticationtime.toDate()).format("hh:mm:ss");
+    user &&
+    moment(user.noticationtime.toDate()).utc().format("YYYY-MM-DDTHH:mm:SSS");
   const newPostAddTime =
     notifications &&
-    moment(notifications[0].createAt.toDate()).format("hh:mm:ss");
+    moment(notifications[0].createAt.toDate())
+      .utc()
+      .format("YYYY-MM-DDTHH:mm:SSS");
   const userseeNotifiorNot =
     newPostAddTime &&
     userLastSee &&
     newPostAddTime.toString() > userLastSee.toString();
-  console.log(userseeNotifiorNot);
-  console.log(newPostAddTime);
-  console.log(userLastSee);
   return (
     <>
       <MainLinksWapper>

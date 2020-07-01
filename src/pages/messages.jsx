@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getnameandprofile, sendmsg } from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
-
+import Loading from "../components/loading";
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -131,97 +131,105 @@ const Messages = ({
   if (!uid) {
     return <Redirect to="/login" />;
   }
-  const mSize = match.params.uid ? true : false;
-  const getmsgValue = (value) => {
-    sendmsg(value, match.params.uid);
-  };
 
-  let mainMsgs = msglist ? msglist : [];
-  if (mainMsgs.length > 0) {
-    if (chatWapperref.current && chatContinerref.current) {
-      setTimeout(() => {
-        chatWapperref.current.scrollTop = chatWapperref.current.scrollHeight;
-      }, 1000);
+  if (user && userfirebase) {
+    const mSize = match.params.uid ? true : false;
+    const getmsgValue = (value) => {
+      sendmsg(value, match.params.uid);
+    };
+
+    let mainMsgs = msglist ? msglist : [];
+    if (mainMsgs.length > 0) {
+      if (chatWapperref.current && chatContinerref.current) {
+        setTimeout(() => {
+          chatWapperref.current.scrollTop = chatWapperref.current.scrollHeight;
+        }, 1000);
+      }
     }
+    return (
+      <MessageWapper changeGrid={mSize}>
+        <div className="first-element">
+          {friendslist.map((data, i) => {
+            return (
+              <div key={i}>
+                <Postheader
+                  userid={data.uid}
+                  username={data.name}
+                  userprofile={data.profile}
+                  lessthetext={true}
+                  path={`/messages/${data.uid}`}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="last-element">
+          {match.params.uid ? (
+            <SideMessageWapper>
+              <div className="message-head">
+                {friendslist.map((data, i) => {
+                  if (data.uid === match.params.uid) {
+                    return (
+                      <Postheader
+                        userid={data.uid}
+                        username={data.name}
+                        userprofile={data.profile}
+                        key={i}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
+              </div>
+              <div className="chat-wapper" ref={chatWapperref}>
+                <ul ref={chatContinerref}>
+                  {msglist ? (
+                    mainMsgs.length > 0 ? (
+                      mainMsgs[0].msg.map((data, i) => {
+                        if (data.uid === uid) {
+                          return (
+                            <li className="even" key={i}>
+                              {data.msg}
+                            </li>
+                          );
+                        } else {
+                          return <li key={i}>{data.msg}</li>;
+                        }
+                      })
+                    ) : (
+                      <StartingInbox>
+                        <h1>Send private messages to friend .</h1>
+                      </StartingInbox>
+                    )
+                  ) : (
+                    <Loading />
+                  )}
+                </ul>
+              </div>
+              <div>
+                <Inputandbutton
+                  placeholder="Enter you'r message"
+                  buttonContent="Send"
+                  method={getmsgValue}
+                />
+              </div>
+            </SideMessageWapper>
+          ) : (
+            <StartingInbox>
+              <h1>Wellcome To SayHi Messenger</h1>
+              <p>
+                find new friends and chat with them, we clear the all chat in
+                every 24hours
+              </p>
+            </StartingInbox>
+          )}
+        </div>
+      </MessageWapper>
+    );
+  } else {
+    return <Loading />;
   }
-  return (
-    <MessageWapper changeGrid={mSize}>
-      <div className="first-element">
-        {friendslist.map((data, i) => {
-          return (
-            <div key={i}>
-              <Postheader
-                message={"hi"}
-                userid={data.uid}
-                username={data.name}
-                userprofile={data.profile}
-                lessthetext={true}
-                path={`/messages/${data.uid}`}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <div className="last-element">
-        {match.params.uid ? (
-          <SideMessageWapper>
-            <div className="message-head">
-              {friendslist.map((data, i) => {
-                if (data.uid === match.params.uid) {
-                  return (
-                    <Postheader
-                      userid={data.uid}
-                      username={data.name}
-                      userprofile={data.profile}
-                      key={i}
-                    />
-                  );
-                } else {
-                  return null;
-                }
-              })}
-            </div>
-            <div className="chat-wapper" ref={chatWapperref}>
-              <ul ref={chatContinerref}>
-                {mainMsgs.length > 0 ? (
-                  mainMsgs[0].msg.map((data, i) => {
-                    if (data.uid === uid) {
-                      return (
-                        <li className="even" key={i}>
-                          {data.msg}
-                        </li>
-                      );
-                    } else {
-                      return <li key={i}>{data.msg}</li>;
-                    }
-                  })
-                ) : (
-                  <StartingInbox>
-                    <h1>Send private messages to friend .</h1>
-                  </StartingInbox>
-                )}
-              </ul>
-            </div>
-            <div>
-              <Inputandbutton
-                placeholder="Enter you'r message"
-                buttonContent="Send"
-                method={getmsgValue}
-              />
-            </div>
-          </SideMessageWapper>
-        ) : (
-          <StartingInbox>
-            <h1>Wellcome To SayHi Messenger</h1>
-            <p>
-              find new friends and chat with them, we clear the all chat in
-              every 24hours
-            </p>
-          </StartingInbox>
-        )}
-      </div>
-    </MessageWapper>
-  );
 };
 
 const mapStateToProps = (state) => {
