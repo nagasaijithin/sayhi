@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Saidnav from "./components/saidnav/saidnav";
 import MaincontentWapper from "./components/mainContent/maincontentWapper";
 import styled from "styled-components";
@@ -13,7 +13,8 @@ import Post from "./pages/post";
 import editprofile from "./pages/editprofile";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-
+import { intiPresence } from "./store/actions/init";
+import { connect } from "react-redux";
 const AppWapper = styled.div`
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -34,7 +35,13 @@ const allRountes = [
   { path: "/login", component: Login },
   { path: "/Signup", component: Signup },
 ];
-function App() {
+function useIntifbState(mathod) {
+  useEffect(() => {
+    mathod();
+  }, [mathod]);
+}
+function App({ intiPresence }) {
+  useIntifbState(intiPresence);
   return (
     <AppWapper>
       <Saidnav />
@@ -47,4 +54,6 @@ function App() {
   );
 }
 
-export default App;
+export default connect(null, {
+  intiPresence,
+})(App);

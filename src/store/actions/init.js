@@ -27,15 +27,28 @@ export const createNewUser = (data) => (
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then((data) => {
-      return firestore.collection("users").doc(data.user.uid).set({
-        firstname,
-        lastname,
-        userid: data.user.uid,
-        bio: "There is no bio yet",
-        followers: [],
-        profile: "false",
-        noticationtime: new Date(),
-      });
+      return firestore
+        .collection("users")
+        .doc(data.user.uid)
+        .set({
+          firstname,
+          lastname,
+          userid: data.user.uid,
+          bio: "There is no bio yet",
+          followers: [],
+          profile: "false",
+          status: "offline",
+          noticationtime: new Date(),
+        })
+        .then(() => {
+          return firebase
+            .database()
+            .ref("status/" + data.user.uid)
+            .set({
+              presence: "online",
+              last_changed: "",
+            });
+        });
     })
     .then(() => {
       dispatch({ type: "CREATE_USE_SUC" });
@@ -217,6 +230,7 @@ export const getnameandprofile = (uid) => (
         name: data.firstname + " " + data.lastname,
         profile: data.profile,
         uid: data.userid,
+        status: data.status,
       };
       dispatch({ type: "GET_FRIENDS", payload: stateUseinfo });
     })
@@ -279,6 +293,8 @@ export const getfullUserdata = (uid) => (
   { getFirebase, getFirestore }
 ) => {
   const firestore = getFirestore();
+  const firebase = getFirebase();
+  console.log(firebase);
   firestore
     .collection("users")
     .doc(uid)
@@ -288,4 +304,51 @@ export const getfullUserdata = (uid) => (
         dispatch({ type: "GET_PROFILE", payload: doc.data() });
       }
     });
+};
+
+export const intiPresence = () => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const state = getState();
+  const uid = state.firebase.auth.uid;
+  if (uid) {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    const userFirestoreRef = firestore.collection("users").doc(uid);
+    const userFirebaseDatabaseRef = firebase.database().ref("/status/" + uid);
+
+    let isOfflineForDatabase = {
+      presence: "offline",
+      last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+    let isOnlineForDatabase = {
+      presence: "online",
+      last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    let isOnlineForfirestore = {
+      status: "online",
+    };
+    let isOfflineForfirestore = {
+      status: "offline",
+    };
+    firebase
+      .database()
+      .ref(".info/connected")
+      .on("value", function (snapshot) {
+        if (snapshot.val() == false) {
+          userFirestoreRef.update(isOfflineForfirestore);
+          return;
+        }
+        userFirebaseDatabaseRef
+          .onDisconnect()
+          .set(isOfflineForDatabase)
+          .then(function () {
+            userFirebaseDatabaseRef.set(isOnlineForDatabase);
+            userFirestoreRef.update(isOnlineForfirestore);
+          });
+      });
+  }
 };

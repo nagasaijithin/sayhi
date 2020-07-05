@@ -158,6 +158,7 @@ const Messages = ({
                   userprofile={data.profile}
                   lessthetext={true}
                   path={`/messages/${data.uid}`}
+                  status={data.status}
                 />
               </div>
             );
@@ -175,6 +176,7 @@ const Messages = ({
                         username={data.name}
                         userprofile={data.profile}
                         key={i}
+                        status={data.status}
                       />
                     );
                   } else {

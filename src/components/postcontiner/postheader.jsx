@@ -9,6 +9,7 @@ const PersonWapper = styled.div`
     height: 5rem;
     background: var(--mainColor);
     border-radius: 50%;
+    position: relative;
     & > img {
       height: 100%;
       width: 100%;
@@ -30,6 +31,15 @@ const PersonWapper = styled.div`
     font-size: 1.2rem;
   }
 `;
+const Onlinesymble = styled.div`
+  height: 15px;
+  width: 15px;
+  background-color: rgb(74, 240, 70);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0px;
+`;
 const Postheader = ({
   timeshow,
   message,
@@ -39,12 +49,40 @@ const Postheader = ({
   userid,
   userprofile,
   lessthetext,
+  status,
 }) => {
+  const profileonlinearenot =
+    status === "online" ? (
+      <>
+        <img src={`https://robohash.org/${username}`} alt={username} />
+        <Onlinesymble />
+      </>
+    ) : (
+      <>
+        <img src={`https://robohash.org/${username}`} alt={username} />
+      </>
+    );
+
+  const withoutimageonlinearenot =
+    status === "online" ? (
+      <>
+        <img src={userprofile} alt={username} />
+        <Onlinesymble />
+      </>
+    ) : (
+      <img src={userprofile} alt={username} />
+    );
   return (
     <PersonWapper>
       <Link to={path ? path : `/profile/${userid}`} className="img">
         {userprofile === "" || userprofile === "false" ? (
-          <img src={`https://robohash.org/${username}`} alt={username} />
+          status ? (
+            profileonlinearenot
+          ) : (
+            <img src={`https://robohash.org/${username}`} alt={username} />
+          )
+        ) : status ? (
+          withoutimageonlinearenot
         ) : (
           <img src={userprofile} alt={username} />
         )}
