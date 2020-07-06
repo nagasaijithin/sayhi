@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Createapost from "../components/postcontiner/createapost";
 import Textpost from "../components/postcontiner/textpost";
@@ -11,8 +11,14 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
-
-const Home = ({ firebase, posts }) => {
+import { intiPresence } from "../store/actions/init";
+function useIntifbState(mathod) {
+  useEffect(() => {
+    mathod();
+  }, [mathod]);
+}
+const Home = ({ firebase, posts, intiPresence }) => {
+  useIntifbState(intiPresence);
   const uid = firebase.auth.uid;
   if (!uid) {
     return <Redirect to="/login" />;
@@ -47,5 +53,5 @@ export default compose(
   firestoreConnect(() => [
     { collection: "posts", orderBy: ["createAt", "desc"] },
   ]),
-  connect(mapStateToProps)
+  connect(mapStateToProps, { intiPresence })
 )(Home);

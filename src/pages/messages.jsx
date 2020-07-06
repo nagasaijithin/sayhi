@@ -5,7 +5,7 @@ import Inputandbutton from "../components/inputandbutton";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { getnameandprofile, sendmsg } from "../store/actions/init";
+import { getnameandprofile, sendmsg, cleanup } from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Loading from "../components/loading";
@@ -103,20 +103,22 @@ const StartingInbox = styled.div`
     font-size: 1.5rem;
   }
 `;
-function useTheUsercome(user, mathod, uid) {
+function useTheUsercome(user, mathod, uid, cleanup) {
   useEffect(() => {
     if (user) {
       const mainuser = user.filter((data) => data.userid === uid);
-      mainuser.forEach((ele) => {
+      mainuser.forEach((ele, i) => {
         ele.followers.forEach((data) => {
           mathod(data);
         });
       });
     }
-  }, [user, mathod, uid]);
+    return () => cleanup();
+  }, [user, mathod, uid, cleanup]);
 }
 const Messages = ({
   friendslist,
+  cleanup,
   userfirebase,
   user,
   getnameandprofile,
@@ -127,12 +129,13 @@ const Messages = ({
   let chatWapperref = useRef();
   let chatContinerref = useRef();
   const uid = userfirebase.auth.uid;
-  useTheUsercome(user, getnameandprofile, uid);
+  useTheUsercome(user, getnameandprofile, uid, cleanup);
+
   if (!uid) {
     return <Redirect to="/login" />;
   }
 
-  if (user && userfirebase) {
+  if (user && userfirebase && friendslist) {
     const mSize = match.params.uid ? true : false;
     const getmsgValue = (value) => {
       sendmsg(value, match.params.uid);
@@ -177,6 +180,7 @@ const Messages = ({
                         userprofile={data.profile}
                         key={i}
                         status={data.status}
+                        lastsee={data.lastsee}
                       />
                     );
                   } else {
@@ -247,41 +251,23 @@ export default compose(
   connect(mapStateToProps, {
     getnameandprofile,
     sendmsg,
+    cleanup,
   }),
   firestoreConnect((props) => {
-    let flag;
     if (props.match.params.uid) {
-      if (props.msglist) {
-        if (props.msglist.length === 0) {
-          const id = `${props.userid}${props.match.params.uid}`;
-          flag = id;
-          return [
-            {
-              collection: "chats",
-              doc: id,
-            },
-            { collection: "users", doc: props.userid },
-          ];
-        } else if (props.msglist[0].id) {
-          return [
-            {
-              collection: "chats",
-              doc: flag,
-            },
-            { collection: "users", doc: props.userid },
-          ];
-        }
-      } else {
-        const swapID = `${props.match.params.uid}${props.userid}`;
-        flag = swapID;
-        return [
-          {
-            collection: "chats",
-            doc: swapID,
-          },
-          { collection: "users", doc: props.userid },
-        ];
-      }
+      const friendUid = props.match.params.uid;
+      const mainUser = props.userid;
+      const newid =
+        mainUser < friendUid
+          ? `${mainUser}${friendUid}`
+          : `${friendUid}${mainUser}`;
+      return [
+        {
+          collection: "chats",
+          doc: newid,
+        },
+        { collection: "users", doc: props.userid },
+      ];
     } else {
       return [{ collection: "users", doc: props.userid }];
     }

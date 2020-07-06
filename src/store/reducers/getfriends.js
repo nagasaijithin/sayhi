@@ -15,6 +15,8 @@ const getFriends = (state = initState, action) => {
         }
         return { ...state };
       }
+    case "GET_FIREND_CLERE":
+      return { friends: [] };
     default:
       return state;
   }

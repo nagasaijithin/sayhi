@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import moment from "moment";
 const PersonWapper = styled.div`
   display: flex;
   align-items: center;
@@ -39,6 +40,7 @@ const Onlinesymble = styled.div`
   position: absolute;
   top: 0;
   right: 0px;
+  border: 2px solid white;
 `;
 const Postheader = ({
   timeshow,
@@ -50,6 +52,7 @@ const Postheader = ({
   userprofile,
   lessthetext,
   status,
+  lastsee,
 }) => {
   const profileonlinearenot =
     status === "online" ? (
@@ -91,7 +94,17 @@ const Postheader = ({
         <Link to={path ? path : `/profile/${userid}`}>
           <h2>{lessthetext ? username.substr(0, 10) + "..." : username}</h2>
         </Link>
-        {timeshow ? null : <span>{message ? message : date}</span>}
+        {timeshow ? null : (
+          <span>
+            {message
+              ? message
+              : date
+              ? date
+              : status === "offline"
+              ? lastsee && `Last see ${moment(lastsee.toDate()).fromNow()}`
+              : status}
+          </span>
+        )}
       </div>
     </PersonWapper>
   );

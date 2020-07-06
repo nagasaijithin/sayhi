@@ -44,3 +44,20 @@ exports.postnotification = functions.firestore
     };
     return createNotification(notificationObj);
   });
+const firestore = admin.firestore();
+
+exports.presencSystemforFirestore = functions.database
+  .ref("/status/{uid}")
+  .onUpdate((change, context) => {
+    const eventStatus = change.after.val();
+    const userStatusFirestoreRef = firestore
+      .collection("users")
+      .doc(context.params.uid);
+
+    eventStatus.last_changed = new Date();
+    console.log("function triggerd");
+    return userStatusFirestoreRef.update({
+      status: eventStatus.presence,
+      lastsee: eventStatus.last_changed,
+    });
+  });
