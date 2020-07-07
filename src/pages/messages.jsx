@@ -5,7 +5,12 @@ import Inputandbutton from "../components/inputandbutton";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { getnameandprofile, sendmsg, cleanup } from "../store/actions/init";
+import {
+  getnameandprofile,
+  sendmsg,
+  cleanup,
+  addtheuserfriendchatlastsee,
+} from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Loading from "../components/loading";
@@ -125,6 +130,7 @@ const Messages = ({
   match,
   sendmsg,
   msglist,
+  addtheuserfriendchatlastsee,
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
@@ -149,12 +155,15 @@ const Messages = ({
         }, 1000);
       }
     }
+    const updatethelastsee = (uid) => {
+      addtheuserfriendchatlastsee(uid);
+    };
     return (
       <MessageWapper changeGrid={mSize}>
         <div className="first-element">
           {friendslist.map((data, i) => {
             return (
-              <div key={i}>
+              <div key={i} onClick={() => updatethelastsee(data.uid)}>
                 <Postheader
                   userid={data.uid}
                   username={data.name}
@@ -252,6 +261,7 @@ export default compose(
     getnameandprofile,
     sendmsg,
     cleanup,
+    addtheuserfriendchatlastsee,
   }),
   firestoreConnect((props) => {
     if (props.match.params.uid) {

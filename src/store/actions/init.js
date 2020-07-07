@@ -40,6 +40,8 @@ export const createNewUser = (data) => (
           status: "online",
           noticationtime: new Date(),
           lastsee: new Date(),
+          chatlastsees: {},
+          unreadmsg: false,
         })
         .then(() => {
           return firebase
@@ -354,4 +356,20 @@ export const intiPresence = () => (
           });
       });
   }
+};
+
+export const addtheuserfriendchatlastsee = (frienduid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const state = getState();
+  const firestore = getFirestore();
+  const uid = state.firebase.auth.uid;
+  firestore
+    .collection("users")
+    .doc(uid)
+    .update({
+      [`chatlastsees.${frienduid}`]: new Date(),
+    });
 };

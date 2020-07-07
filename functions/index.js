@@ -31,6 +31,35 @@ const createNotification = (obj) => {
       ...obj,
     });
 };
+
+exports.checkUsermsgredarenot = functions.firestore
+  .document("chats/{chatId}")
+  .onUpdate((change, context) => {
+    const data = change.after.data();
+    const fullid = context.params.chatId;
+    const user1 = fullid.slice(0, 28);
+    const user2 = fullid.slice(28);
+    const lastmsguser = data.msg[data.msg.length - 1];
+    const lastmsguserUid = lastmsguser.uid;
+    const lastmsguserTime = lastmsguser.createAt;
+    const witchOneUsertochange = user1 === lastmsguserUid ? user2 : user1;
+    admin
+      .firestore()
+      .collection("users")
+      .doc(witchOneUsertochange)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          let userdata = doc.data();
+          let userlastseeisfriend =
+            userdata.chatlastsees[user1 === lastmsguserUid ? user1 : user2];
+        }
+      });
+    return admin.firestore().collection("haha").add({
+      name: context.params.chatId,
+      value: value,
+    });
+  });
 exports.postnotification = functions.firestore
   .document("posts/{postsId}")
   .onCreate((doc) => {
