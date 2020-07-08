@@ -36,21 +36,23 @@ const Notifications = ({ firebase, notifications }) => {
   if (notifications) {
     return (
       <NotificationsWapper>
-        {notifications.map((data, i) => {
-          const { createAt, msg, userProfile, useruid, username } = data;
-          return (
-            <ContentContiner key={i}>
-              <Postheader
-                timeshow={true}
-                userid={useruid}
-                userprofile={userProfile}
-                username={username}
-              />
-              <p className="info">{msg}</p>
-              <p className="info">{moment(createAt.toDate()).fromNow()}</p>
-            </ContentContiner>
-          );
-        })}
+        {notifications
+          .filter((data) => data.useruid !== uid)
+          .map((data, i) => {
+            const { createAt, msg, userProfile, useruid, username } = data;
+            return (
+              <ContentContiner key={i}>
+                <Postheader
+                  timeshow={true}
+                  userid={useruid}
+                  userprofile={userProfile}
+                  username={username}
+                />
+                <p className="info">{msg}</p>
+                <p className="info">{moment(createAt.toDate()).fromNow()}</p>
+              </ContentContiner>
+            );
+          })}
       </NotificationsWapper>
     );
   } else {

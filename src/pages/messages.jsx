@@ -10,6 +10,7 @@ import {
   sendmsg,
   cleanup,
   addtheuserfriendchatlastsee,
+  clearthemsgsee,
 } from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
@@ -39,8 +40,12 @@ const MessageWapper = styled.div`
       background-color: var(--secondColor);
       border-radius: var(--mainborderRadius);
     }
-    & > div {
+    & > .read {
       padding: 1rem;
+    }
+    & > .notread {
+      background-color: #c7d1fa;
+      border-radius: 1rem;
     }
   }
   & > .last-element {
@@ -131,6 +136,8 @@ const Messages = ({
   sendmsg,
   msglist,
   addtheuserfriendchatlastsee,
+  unreadmsglist,
+  clearthemsgsee,
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
@@ -155,6 +162,11 @@ const Messages = ({
         }, 1000);
       }
     }
+    if (mainMsgs) {
+      if (match.params.uid) {
+        clearthemsgsee(match.params.uid);
+      }
+    }
     const updatethelastsee = (uid) => {
       addtheuserfriendchatlastsee(uid);
     };
@@ -162,8 +174,25 @@ const Messages = ({
       <MessageWapper changeGrid={mSize}>
         <div className="first-element">
           {friendslist.map((data, i) => {
+            let unreadmsguserAreNot = unreadmsglist.some((doc) => {
+              return doc.unreadmsguserid === data.uid;
+            });
+            if (match.params.uid && unreadmsguserAreNot) {
+              unreadmsglist.forEach((ele) => {
+                if (ele.unreadmsguserid === match.params.uid) {
+                  clearthemsgsee(match.params.uid);
+                  unreadmsguserAreNot = !unreadmsguserAreNot;
+                }
+              });
+            }
             return (
-              <div key={i} onClick={() => updatethelastsee(data.uid)}>
+              <div
+                key={i}
+                onClick={() => {
+                  updatethelastsee(data.uid);
+                }}
+                className={unreadmsguserAreNot ? "notread" : "read"}
+              >
                 <Postheader
                   userid={data.uid}
                   username={data.name}
@@ -254,6 +283,7 @@ const mapStateToProps = (state) => {
     user: state.firestore.ordered.users,
     friendslist: state.userfriends.friends,
     msglist: state.firestore.ordered.chats,
+    unreadmsglist: state.fullprofile.unreadmsg,
   };
 };
 export default compose(
@@ -262,6 +292,7 @@ export default compose(
     sendmsg,
     cleanup,
     addtheuserfriendchatlastsee,
+    clearthemsgsee,
   }),
   firestoreConnect((props) => {
     if (props.match.params.uid) {

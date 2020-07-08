@@ -130,7 +130,13 @@ const NavLinks = ({
       method: setNotificationTime,
       unreadicon: true,
     },
-    { icon: message, title: "Message", path: "/messages", method: Notging },
+    {
+      icon: message,
+      title: "Message",
+      path: "/messages",
+      method: Notging,
+      unreadicon: true,
+    },
     { icon: logout, title: "Logout", path: "/logout", method: Notging },
   ];
 
@@ -148,15 +154,18 @@ const NavLinks = ({
   const userLastSee =
     user &&
     moment(user.noticationtime.toDate()).utc().format("YYYY-MM-DDTHH:mm:SSS");
+  const lastnotificationscheck =
+    notifications && notifications.filter((data) => data.useruid !== uid);
   const newPostAddTime =
     notifications &&
-    moment(notifications[0].createAt.toDate())
+    moment(lastnotificationscheck[0].createAt.toDate())
       .utc()
       .format("YYYY-MM-DDTHH:mm:SSS");
   const userseeNotifiorNot =
     newPostAddTime &&
     userLastSee &&
     newPostAddTime.toString() > userLastSee.toString();
+  const unreadmsgs = user && user.unreadmsg.length;
   return (
     <>
       <MainLinksWapper>
@@ -168,7 +177,12 @@ const NavLinks = ({
                 <LinkName>{title}</LinkName>
               </Link>
 
-              {unreadicon && userseeNotifiorNot ? <div></div> : null}
+              {title === "Notifications" && unreadicon && userseeNotifiorNot ? (
+                <div></div>
+              ) : null}
+              {title === "Message" && unreadicon && unreadmsgs > 0 ? (
+                <div></div>
+              ) : null}
             </li>
           ))}
         </ul>

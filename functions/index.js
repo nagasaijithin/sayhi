@@ -42,8 +42,9 @@ exports.checkUsermsgredarenot = functions.firestore
     const lastmsguser = data.msg[data.msg.length - 1];
     const lastmsguserUid = lastmsguser.uid;
     const lastmsguserTime = lastmsguser.createAt;
+    const lastmsguserMsg = lastmsguser.msg;
     const witchOneUsertochange = user1 === lastmsguserUid ? user2 : user1;
-    admin
+    return admin
       .firestore()
       .collection("users")
       .doc(witchOneUsertochange)
@@ -53,13 +54,33 @@ exports.checkUsermsgredarenot = functions.firestore
           let userdata = doc.data();
           let userlastseeisfriend =
             userdata.chatlastsees[user1 === lastmsguserUid ? user1 : user2];
+          let updatedata = {
+            unreadmsguserid: lastmsguserUid,
+            content: lastmsguserMsg,
+          };
+          if (userlastseeisfriend && userlastseeisfriend < lastmsguserTime) {
+            return addtheunreadmsgInuser(witchOneUsertochange, updatedata);
+          } else {
+            return addtheunreadmsgInuser(witchOneUsertochange, updatedata);
+          }
+        } else {
+          console.log("error");
         }
+        return null;
+      })
+      .catch((err) => {
+        throw err;
       });
-    return admin.firestore().collection("haha").add({
-      name: context.params.chatId,
-      value: value,
-    });
   });
+function addtheunreadmsgInuser(userid, data) {
+  return admin
+    .firestore()
+    .collection("users")
+    .doc(userid)
+    .update({
+      unreadmsg: admin.firestore.FieldValue.arrayUnion(data),
+    });
+}
 exports.postnotification = functions.firestore
   .document("posts/{postsId}")
   .onCreate((doc) => {

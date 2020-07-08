@@ -41,7 +41,7 @@ export const createNewUser = (data) => (
           noticationtime: new Date(),
           lastsee: new Date(),
           chatlastsees: {},
-          unreadmsg: false,
+          unreadmsg: [],
         })
         .then(() => {
           return firebase
@@ -357,7 +357,36 @@ export const intiPresence = () => (
       });
   }
 };
+export const clearthemsgsee = (frienduid) => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const state = getState();
+  const firestore = getFirestore();
+  const uid = state.firebase.auth.uid;
 
+  firestore
+    .collection("users")
+    .doc(uid)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        const unreadmsglist = data.unreadmsg;
+        unreadmsglist.forEach((ele) => {
+          if (ele.unreadmsguserid === frienduid) {
+            firestore
+              .collection("users")
+              .doc(uid)
+              .update({
+                unreadmsg: firestore.FieldValue.arrayRemove(ele),
+              });
+          }
+        });
+      }
+    });
+};
 export const addtheuserfriendchatlastsee = (frienduid) => (
   dispatch,
   getState,
@@ -366,6 +395,8 @@ export const addtheuserfriendchatlastsee = (frienduid) => (
   const state = getState();
   const firestore = getFirestore();
   const uid = state.firebase.auth.uid;
+
+  dispatch(clearthemsgsee(frienduid));
   firestore
     .collection("users")
     .doc(uid)
