@@ -9,6 +9,7 @@ const SaidnavWapper = styled.div`
     order: 2;
     bottom: 0;
     position: sticky;
+    z-index: 20;
   }
   & > div {
     height: 100vh;

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Card } from "../../style/ui/components";
 import { connect } from "react-redux";
 import { addPost } from "../../store/actions/posts";
+import { getfullUserdata } from "../../store/actions/init";
 import { compose } from "redux";
-import { firestoreConnect } from "react-redux-firebase";
+import Loading from "../loading";
 const CreatePostWapper = styled(Card)`
   display: flex;
   flex-direction: column;
@@ -66,82 +67,82 @@ const FormWapper = styled.form`
     border-radius: var(--mainborderRadius);
   }
 `;
-const Createapost = ({ addPost, users, uid }) => {
+function useGetUserData(uid, mathod) {
+  useEffect(() => {
+    uid && mathod(uid);
+  }, [uid, mathod]);
+}
+const Createapost = ({ addPost, users, uid, getfullUserdata }) => {
   const [imageVal, setimageVal] = useState(false);
   const [textVal, settextVal] = useState("");
-  const userName =
-    users &&
-    users.reduce((ac, user) => {
-      if (user.userid === uid) {
-        ac = user.firstname + " " + user.lastname;
-        return ac;
+  useGetUserData(uid, getfullUserdata);
+  if (users) {
+    const userName = users.firstname + " " + users.lastname;
+    const profile = users.profile;
+
+    const formHandler = (e) => {
+      e.preventDefault();
+      e.persist();
+      if (e.target.postText.value !== "") {
+        addPost(e.target.postText.value, e.target.postImage, userName, profile);
+        settextVal("");
+        setimageVal(false);
       }
-      return ac;
-    }, "User Name not Diffined");
-  const profile = users && users[0].profile;
+    };
+    const photoHandler = (e) => {
+      e.target.value !== "" && setimageVal(true);
+    };
+    const inputHandler = (e) => {
+      settextVal(e.target.value);
+    };
 
-  const formHandler = (e) => {
-    e.preventDefault();
-    e.persist();
-    if (e.target.postText.value !== "") {
-      addPost(e.target.postText.value, e.target.postImage, userName, profile);
-      settextVal("");
-      setimageVal(false);
-    }
-  };
-  const photoHandler = (e) => {
-    e.target.value !== "" && setimageVal(true);
-  };
-  const inputHandler = (e) => {
-    settextVal(e.target.value);
-  };
-
-  return (
-    <CreatePostWapper>
-      <PersonWapper>
-        <div>
-          {profile === "false" ? (
-            <img src={`https://robohash.org/${userName}`} alt={userName} />
-          ) : (
-            <img src={profile} alt={userName} />
-          )}
-        </div>
-        <h2>{userName}</h2>
-      </PersonWapper>
-      <FormWapper onSubmit={formHandler}>
-        <input
-          type="text"
-          name="postText"
-          placeholder="Write somthing ....."
-          onChange={inputHandler}
-          value={textVal}
-        />
-        <label htmlFor="file" className="postbtn">
+    return (
+      <CreatePostWapper>
+        <PersonWapper>
+          <div>
+            {profile === "false" ? (
+              <img src={`https://robohash.org/${userName}`} alt={userName} />
+            ) : (
+              <img src={profile} alt={userName} />
+            )}
+          </div>
+          <h2>{userName}</h2>
+        </PersonWapper>
+        <FormWapper onSubmit={formHandler}>
           <input
-            id="file"
-            type="file"
-            name="postImage"
-            accept="image/*"
-            onChange={photoHandler}
+            type="text"
+            name="postText"
+            placeholder="Write somthing ....."
+            onChange={inputHandler}
+            value={textVal}
           />
-          {imageVal ? "Photo is Add" : "+Add A Photo"}
-        </label>
-        <button className="postbtn">Post</button>
-      </FormWapper>
-    </CreatePostWapper>
-  );
+          <label htmlFor="file" className="postbtn">
+            <input
+              id="file"
+              type="file"
+              name="postImage"
+              accept="image/*"
+              onChange={photoHandler}
+            />
+            {imageVal ? "Photo is Add" : "+Add A Photo"}
+          </label>
+          <button className="postbtn">Post</button>
+        </FormWapper>
+      </CreatePostWapper>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 const mapStateToProps = (state) => {
   return {
-    users: state.firestore.ordered.users,
+    users: state.fullprofile,
     uid: state.firebase.auth.uid,
   };
 };
 export default compose(
   connect(mapStateToProps, {
     addPost,
-  }),
-  firestoreConnect((props) => {
-    return [{ collection: "users", doc: props.uid }];
+    getfullUserdata,
   })
 )(Createapost);

@@ -15,6 +15,7 @@ import {
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Loading from "../components/loading";
+import history from "../history";
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -130,25 +131,26 @@ const Messages = ({
   friendslist,
   cleanup,
   userfirebase,
-  user,
+  users,
   getnameandprofile,
   match,
   sendmsg,
   msglist,
   addtheuserfriendchatlastsee,
-  unreadmsglist,
   clearthemsgsee,
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
   const uid = userfirebase.auth.uid;
-  useTheUsercome(user, getnameandprofile, uid, cleanup);
+  useTheUsercome(users, getnameandprofile, uid, cleanup);
 
   if (!uid) {
     return <Redirect to="/login" />;
   }
 
-  if (user && userfirebase && friendslist) {
+  if (users && userfirebase && friendslist) {
+    const user = users[0];
+    const unreadmsglist = user.unreadmsg;
     const mSize = match.params.uid ? true : false;
     const getmsgValue = (value) => {
       sendmsg(value, match.params.uid);
@@ -190,6 +192,7 @@ const Messages = ({
                 key={i}
                 onClick={() => {
                   updatethelastsee(data.uid);
+                  history.push(`/messages/${data.uid}`);
                 }}
                 className={unreadmsguserAreNot ? "notread" : "read"}
               >
@@ -280,10 +283,9 @@ const mapStateToProps = (state) => {
   return {
     userfirebase: state.firebase,
     userid: state.firebase.auth.uid,
-    user: state.firestore.ordered.users,
+    users: state.firestore.ordered.users,
     friendslist: state.userfriends.friends,
     msglist: state.firestore.ordered.chats,
-    unreadmsglist: state.fullprofile.unreadmsg,
   };
 };
 export default compose(

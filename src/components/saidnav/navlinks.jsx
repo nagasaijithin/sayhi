@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 // / all icons link
@@ -11,7 +11,7 @@ import login from "../../svg/login.svg";
 import createaccount from "../../svg/createaccount.svg";
 
 import { connect } from "react-redux";
-import { addnotificationtime, getfullUserdata } from "../../store/actions/init";
+import { addnotificationtime } from "../../store/actions/init";
 import moment from "moment";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
@@ -96,114 +96,116 @@ const LinkName = styled.span`
     transform: rotate(136deg);
   }
 `;
-function useGetUserData(uid, mathod) {
-  useEffect(() => {
-    uid && mathod(uid);
-  }, [uid, mathod]);
-}
+
 const NavLinks = ({
   addnotificationtime,
   loginuserInfo,
   notifications,
-  user,
-  getfullUserdata,
+  userList,
 }) => {
   const uid = loginuserInfo.auth.uid;
 
-  useGetUserData(uid, getfullUserdata);
-  const Notging = () => {};
-  const setNotificationTime = () => {
-    addnotificationtime();
-  };
-  const Loginlinks = [
-    { icon: home, title: "Home", path: "/", method: Notging },
-    {
-      icon: person,
-      title: "Profile",
-      path: `/profile/${uid}`,
-      method: Notging,
-    },
-    {
-      icon: notification,
-      title: "Notifications",
-      path: "/notifications",
-      method: setNotificationTime,
-      unreadicon: true,
-    },
-    {
-      icon: message,
-      title: "Message",
-      path: "/messages",
-      method: Notging,
-      unreadicon: true,
-    },
-    { icon: logout, title: "Logout", path: "/logout", method: Notging },
-  ];
+  if (userList && notifications) {
+    const user = userList[0];
+    const Notging = () => {};
+    const setNotificationTime = () => {
+      addnotificationtime();
+    };
+    const Loginlinks = [
+      { icon: home, title: "Home", path: "/", method: Notging },
+      {
+        icon: person,
+        title: "Profile",
+        path: `/profile/${uid}`,
+        method: Notging,
+      },
+      {
+        icon: notification,
+        title: "Notifications",
+        path: "/notifications",
+        method: setNotificationTime,
+        unreadicon: true,
+      },
+      {
+        icon: message,
+        title: "Message",
+        path: "/messages",
+        method: Notging,
+        unreadicon: true,
+      },
+      { icon: logout, title: "Logout", path: "/logout", method: Notging },
+    ];
 
-  const NotloginLinks = [
-    { icon: login, title: "Login", path: "/login", method: Notging },
-    {
-      icon: createaccount,
-      title: "Signup",
-      path: "/signup",
-      method: Notging,
-    },
-  ];
-  const Links = uid ? Loginlinks : NotloginLinks;
+    const NotloginLinks = [
+      { icon: login, title: "Login", path: "/login", method: Notging },
+      {
+        icon: createaccount,
+        title: "Signup",
+        path: "/signup",
+        method: Notging,
+      },
+    ];
+    const Links = uid ? Loginlinks : NotloginLinks;
 
-  const userLastSee =
-    user &&
-    moment(user.noticationtime.toDate()).utc().format("YYYY-MM-DDTHH:mm:SSS");
-  const lastnotificationscheck =
-    notifications && notifications.filter((data) => data.useruid !== uid);
-  const newPostAddTime =
-    notifications &&
-    moment(lastnotificationscheck[0].createAt.toDate())
+    const userLastSee = moment(user.noticationtime.toDate())
       .utc()
       .format("YYYY-MM-DDTHH:mm:SSS");
-  const userseeNotifiorNot =
-    newPostAddTime &&
-    userLastSee &&
-    newPostAddTime.toString() > userLastSee.toString();
-  const unreadmsgs = user && user.unreadmsg.length;
-  return (
-    <>
-      <MainLinksWapper>
-        <ul>
-          {Links.map(({ icon, title, path, method, unreadicon }, i) => (
-            <li key={i} onClick={method}>
-              <Link to={path}>
-                <img src={icon} alt={title} />
-                <LinkName>{title}</LinkName>
-              </Link>
+    const lastnotificationscheck = notifications.filter(
+      (data) => data.useruid !== uid
+    );
+    const newPostAddTime = moment(lastnotificationscheck[0].createAt.toDate())
+      .utc()
+      .format("YYYY-MM-DDTHH:mm:SSS");
+    const userseeNotifiorNot =
+      newPostAddTime &&
+      userLastSee &&
+      newPostAddTime.toString() > userLastSee.toString();
+    const unreadmsgs = user.unreadmsg.length;
+    return (
+      <>
+        <MainLinksWapper>
+          <ul>
+            {Links.map(({ icon, title, path, method, unreadicon }, i) => (
+              <li key={i} onClick={method}>
+                <Link to={path}>
+                  <img src={icon} alt={title} />
+                  <LinkName>{title}</LinkName>
+                </Link>
 
-              {title === "Notifications" && unreadicon && userseeNotifiorNot ? (
-                <div></div>
-              ) : null}
-              {title === "Message" && unreadicon && unreadmsgs > 0 ? (
-                <div></div>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </MainLinksWapper>
-    </>
-  );
+                {title === "Notifications" &&
+                unreadicon &&
+                userseeNotifiorNot ? (
+                  <div></div>
+                ) : null}
+                {title === "Message" && unreadicon && unreadmsgs > 0 ? (
+                  <div></div>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </MainLinksWapper>
+      </>
+    );
+  } else {
+    return null;
+  }
 };
 const mapStateToProps = (state) => {
   return {
     loginuserInfo: state.firebase,
     notifications: state.firestore.ordered.notifications,
-    user: state.fullprofile,
+    userList: state.firestore.ordered.users,
     userid: state.firebase.auth.uid,
   };
 };
 export default compose(
   connect(mapStateToProps, {
     addnotificationtime,
-    getfullUserdata,
   }),
   firestoreConnect((props) => {
-    return [{ collection: "notifications", orderBy: ["createAt", "desc"] }];
+    return [
+      { collection: "users", doc: props.userid },
+      { collection: "notifications", orderBy: ["createAt", "desc"] },
+    ];
   })
 )(NavLinks);

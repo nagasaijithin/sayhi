@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import {
   MainButton,
@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
-import { followAuser } from "../store/actions/init";
+import { followAuser, getfullUserdata } from "../store/actions/init";
 import Loading from "../components/loading";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
@@ -69,21 +69,31 @@ const UserPostWapper = styled.div`
     font-size: 2.4rem;
   }
 `;
-const Profile = ({ posts, firebase, user, match, followAuser }) => {
-  const loginuid = firebase.auth.uid;
+function useGetUserData(uid, mathod) {
+  useEffect(() => {
+    uid && mathod(uid);
+  }, [uid, mathod]);
+}
+const Profile = ({
+  posts,
+  userfirebase,
+  user,
+  match,
+  followAuser,
+  getfullUserdata,
+}) => {
+  const loginuid = userfirebase.auth.uid;
+  const viewuserid = match.params.id;
+  useGetUserData(viewuserid, getfullUserdata);
   if (!loginuid) {
     return <Redirect to="/login" />;
   }
-  const viewuserid = match.params.id;
-  const oldUserarenot = user && user[0].id === viewuserid;
-  if (user && posts && oldUserarenot) {
-    let username = user[0].firstname + " " + user[0].lastname;
-    let bio = user[0].bio;
-    let followers = user[0].followers;
-    let loginuserFollowOrNot = user[0].followers.some(
-      (data) => data === loginuid
-    );
-    let profile = user[0].profile;
+  if (user && posts) {
+    let username = user.firstname + " " + user.lastname;
+    let bio = user.bio;
+    let followers = user.followers;
+    let loginuserFollowOrNot = user.followers.some((data) => data === loginuid);
+    let profile = user.profile;
     return (
       <>
         <ProfileContentWapper>
@@ -156,19 +166,21 @@ const Profile = ({ posts, firebase, user, match, followAuser }) => {
 
 const mapStateToProps = (state) => {
   return {
-    firebase: state.firebase,
+    userfirebase: state.firebase,
     posts: state.firestore.ordered.posts,
-    user: state.firestore.ordered.users,
+    user: state.fullprofile,
+    uid: state.firebase.auth.uid,
   };
 };
 export default compose(
+  connect(mapStateToProps, {
+    followAuser,
+    getfullUserdata,
+  }),
   firestoreConnect((props) => {
     return [
       { collection: "posts", orderBy: ["createAt", "desc"] },
-      { collection: "users", doc: props.match.params.id },
+      { collection: "users", doc: props.uid },
     ];
-  }),
-  connect(mapStateToProps, {
-    followAuser,
   })
 )(Profile);
