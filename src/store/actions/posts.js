@@ -1,3 +1,5 @@
+//// posting new post to feed
+
 export const addPost = (postText, postImage, username, profile) => (
   dispatch,
   getState,
@@ -36,11 +38,22 @@ export const addPost = (postText, postImage, username, profile) => (
               .child("postimages/" + postId)
               .getDownloadURL()
               .then((url) => {
-                firestore.collection("posts").doc(postId).update({
-                  image: url,
-                });
+                firestore
+                  .collection("posts")
+                  .doc(postId)
+                  .update({
+                    image: url,
+                  })
+                  .then(() => {
+                    dispatch({
+                      type: "NTFY_SUCCESS_MSG",
+                      payload: "Posted SuccessFully",
+                    });
+                  });
               });
           });
+      } else {
+        dispatch({ type: "NTFY_SUCCESS_MSG", payload: "Posted SuccessFully" });
       }
     });
 };

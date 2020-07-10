@@ -29,10 +29,8 @@ const Inputandbutton = ({ placeholder, buttonContent, method }) => {
   const formHandler = (e) => {
     e.preventDefault();
     e.persist();
-    if (inptVal !== "") {
-      method(e.target.filed.value);
-      setInpVal("");
-    }
+    method(e.target.filed.value);
+    setInpVal("");
   };
   return (
     <FormWapper onSubmit={formHandler}>

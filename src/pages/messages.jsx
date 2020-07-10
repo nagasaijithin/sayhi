@@ -11,6 +11,7 @@ import {
   cleanup,
   addtheuserfriendchatlastsee,
   clearthemsgsee,
+  sendNotifi,
 } from "../store/actions/init";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
@@ -138,6 +139,7 @@ const Messages = ({
   msglist,
   addtheuserfriendchatlastsee,
   clearthemsgsee,
+  sendNotifi,
 }) => {
   let chatWapperref = useRef();
   let chatContinerref = useRef();
@@ -153,7 +155,11 @@ const Messages = ({
     const unreadmsglist = user.unreadmsg;
     const mSize = match.params.uid ? true : false;
     const getmsgValue = (value) => {
-      sendmsg(value, match.params.uid);
+      if (value !== "") {
+        sendmsg(value, match.params.uid);
+      } else {
+        sendNotifi(false, "Message Filed is Empty");
+      }
     };
 
     let mainMsgs = msglist ? msglist : [];
@@ -295,6 +301,7 @@ export default compose(
     cleanup,
     addtheuserfriendchatlastsee,
     clearthemsgsee,
+    sendNotifi,
   }),
   firestoreConnect((props) => {
     if (props.match.params.uid) {

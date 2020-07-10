@@ -13,7 +13,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import { addPostComment, liketheComment } from "../store/actions/posts";
-import { getusername } from "../store/actions/init";
+import { getusername, sendNotifi } from "../store/actions/init";
 import Loading from "../components/loading";
 const CommentWapper = styled.div`
   margin: 2rem;
@@ -40,6 +40,7 @@ const Post = ({
   curusername,
   curuserprofile,
   liketheComment,
+  sendNotifi,
 }) => {
   const uid = firebase.auth.uid;
   useEffect(() => {
@@ -51,7 +52,11 @@ const Post = ({
   if (posts && postcomments) {
     const commentHandler = (value) => {
       const { id } = posts[0];
-      addPostComment(value, curusername, id, curuserprofile);
+      if (value !== "") {
+        addPostComment(value, curusername, id, curuserprofile);
+      } else {
+        sendNotifi(false, "Comment Filed is Empty");
+      }
     };
     const likeaComment = (postid, id, cond) => {
       liketheComment(postid, id, cond);
@@ -145,5 +150,6 @@ export default compose(
     addPostComment,
     liketheComment,
     getusername,
+    sendNotifi,
   })
 )(Post);

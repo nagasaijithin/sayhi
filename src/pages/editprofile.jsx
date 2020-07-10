@@ -4,7 +4,7 @@ import { MainButton } from "../style/ui/components";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { editeProfile } from "../store/actions/init";
+import { editeProfile, sendNotifi } from "../store/actions/init";
 const ButtonOnSave = styled(MainButton)`
   padding: 1rem;
   border-radius: var(--mainborderRadius);
@@ -98,7 +98,7 @@ class Editprofile extends React.Component {
         ...reset,
       });
     } else {
-      console.log("error");
+      this.props.sendNotifi(false, "All Filed Are Empty");
     }
   };
   inputHandler = (e) => {
@@ -158,4 +158,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
   editeProfile,
+  sendNotifi,
 })(Editprofile);

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Card } from "../../style/ui/components";
 import { connect } from "react-redux";
 import { addPost } from "../../store/actions/posts";
-import { getfullUserdata } from "../../store/actions/init";
+import { getfullUserdata, sendNotifi } from "../../store/actions/init";
 import { compose } from "redux";
 import Loading from "../loading";
 const CreatePostWapper = styled(Card)`
@@ -72,7 +72,7 @@ function useGetUserData(uid, mathod) {
     uid && mathod(uid);
   }, [uid, mathod]);
 }
-const Createapost = ({ addPost, users, uid, getfullUserdata }) => {
+const Createapost = ({ addPost, users, uid, getfullUserdata, sendNotifi }) => {
   const [imageVal, setimageVal] = useState(false);
   const [textVal, settextVal] = useState("");
   useGetUserData(uid, getfullUserdata);
@@ -87,6 +87,11 @@ const Createapost = ({ addPost, users, uid, getfullUserdata }) => {
         addPost(e.target.postText.value, e.target.postImage, userName, profile);
         settextVal("");
         setimageVal(false);
+      } else if (
+        e.target.postText.value === "" &&
+        e.target.postImage.value === ""
+      ) {
+        sendNotifi(false, "Post Content is Empty");
       }
     };
     const photoHandler = (e) => {
@@ -144,5 +149,6 @@ export default compose(
   connect(mapStateToProps, {
     addPost,
     getfullUserdata,
+    sendNotifi,
   })
 )(Createapost);

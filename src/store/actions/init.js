@@ -404,3 +404,16 @@ export const addtheuserfriendchatlastsee = (frienduid) => (
       [`chatlastsees.${frienduid}`]: new Date(),
     });
 };
+
+export const clearTheNotifiSuccess = () => (dispatch) => {
+  dispatch({ type: "NTFY_SUCCESS_MSG_CLEAR" });
+};
+
+export const clearTheNotifiError = () => (dispatch) => {
+  dispatch({ type: "NTFY_ERROR_MSG_CLEAR" });
+};
+
+export const sendNotifi = (type, msg) => (dispatch) => {
+  const checkTheError = type ? "NTFY_SUCCESS_MSG" : "NTFY_ERROR_MSG";
+  dispatch({ type: checkTheError, payload: msg });
+};

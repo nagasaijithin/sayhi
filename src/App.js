@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Saidnav from "./components/saidnav/saidnav";
 import MaincontentWapper from "./components/mainContent/maincontentWapper";
+import WayNotifier from "./components/waynotifier";
 import styled from "styled-components";
 import { Route } from "react-router-dom";
 
@@ -43,14 +44,17 @@ function useIntifbState(mathod) {
 function App({ intiPresence }) {
   useIntifbState(intiPresence);
   return (
-    <AppWapper>
-      <Saidnav />
-      <MaincontentWapper>
-        {allRountes.map((route, i) => (
-          <Route exact {...route} key={i} />
-        ))}
-      </MaincontentWapper>
-    </AppWapper>
+    <>
+      <AppWapper>
+        <Saidnav />
+        <MaincontentWapper>
+          {allRountes.map((route, i) => (
+            <Route exact {...route} key={i} />
+          ))}
+        </MaincontentWapper>
+      </AppWapper>
+      <WayNotifier />
+    </>
   );
 }
 
