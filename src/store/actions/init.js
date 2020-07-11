@@ -11,9 +11,13 @@ export const userLogin = (data) => (
     .signInWithEmailAndPassword(data.email, data.password)
     .then((data) => {
       dispatch({ type: "LOGIN_SUC" });
+      dispatch({ type: "NTFY_SUCCESS_MSG", payload: "Login SuccessFully" });
       history.push("/");
     })
-    .catch((error) => dispatch({ type: "LOGIN_ERR", payload: error }));
+    .catch((error) => {
+      dispatch({ type: "NTFY_ERROR_MSG", payload: error.message });
+      dispatch({ type: "LOGIN_ERR", payload: error });
+    });
 };
 export const createNewUser = (data) => (
   dispatch,
@@ -55,9 +59,11 @@ export const createNewUser = (data) => (
     })
     .then(() => {
       dispatch({ type: "CREATE_USE_SUC" });
+      dispatch({ type: "NTFY_SUCCESS_MSG", payload: "SignUp SuccessFully" });
     })
     .catch((error) => {
-      dispatch({ type: "CREATE_USE_ERR", payload: error });
+      dispatch({ type: "CREATE_USE_ERR", payload: error.message });
+      dispatch({ type: "NTFY_ERROR_MSG", payload: error.message });
     });
 };
 export const UserLogout = () => (dispatch, getState, { getFirebase }) => {
@@ -67,6 +73,7 @@ export const UserLogout = () => (dispatch, getState, { getFirebase }) => {
     .signOut()
     .then(() => {
       history.push("/login");
+      dispatch({ type: "NTFY_SUCCESS_MSG", payload: "LogOut SuccessFully" });
       dispatch({ type: "SIGNOUT_SUC" });
     });
 };
@@ -110,7 +117,7 @@ export const followAuser = (uid, followeduserid, cond) => (
         : firestore.FieldValue.arrayUnion(followeduserid),
     });
 };
-
+// editing profile
 export const editeProfile = (profileimg, userData) => (
   dispatch,
   getState,
@@ -190,7 +197,7 @@ export const editeuserName = (image, userData) => (
                 .where("useruid", "==", state.firebase.auth.uid)
                 .get()
                 .then((doc) => {
-                  doc.forEach((ele) => {
+                  return doc.forEach((ele) => {
                     firestore
                       .collection("posts")
                       .doc(ele.id)
@@ -198,6 +205,15 @@ export const editeuserName = (image, userData) => (
                         username: editfirstname + " " + editlastname,
                       });
                   });
+                })
+                .then(() => {
+                  dispatch({
+                    type: "NTFY_SUCCESS_MSG",
+                    payload: "Edite You'r SuccessFully",
+                  });
+                })
+                .catch((err) => {
+                  dispatch({ type: "NTFY_ERROR_MSG", payload: err.message });
                 });
             }
           });

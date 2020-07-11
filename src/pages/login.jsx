@@ -1,11 +1,11 @@
 import React from "react";
 import Logo from "../svg/Logo2.svg";
 import styled from "styled-components";
-import { MainButton, MainGoogleButton } from "../style/ui/components";
+import { MainButton } from "../style/ui/components";
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { userLogin } from "../store/actions/init";
+import { userLogin, sendNotifi } from "../store/actions/init";
 import { Redirect } from "react-router-dom";
 const LoginWapper = styled.div`
   height: 100vh;
@@ -76,6 +76,12 @@ class Login extends React.Component {
     const { email, password } = this.state;
     if (email !== "" && password !== "") {
       this.props.userLogin(this.state);
+    } else if (email === "" && password !== "") {
+      this.props.sendNotifi(false, "Email Filed Is Empty");
+    } else if (password === "" && email !== "") {
+      this.props.sendNotifi(false, "Password Filed Is Empty");
+    } else if (email === "" && password === "") {
+      this.props.sendNotifi(false, "Login Fileds Are Ampty");
     }
   };
   inputHandler = (e) => {
@@ -101,6 +107,7 @@ class Login extends React.Component {
               name="email"
               placeholder="Enter You'r Email"
               onChange={this.inputHandler}
+              required
             />
           </div>
           <div>
@@ -114,7 +121,6 @@ class Login extends React.Component {
             />
           </div>
           <MainButton bgwhite={true}>LogIn</MainButton>
-          <MainGoogleButton bgwhite={true}>LogIn With Google</MainGoogleButton>
           <span>
             I don't have an account <Link to="/signup">Create A Account</Link>
           </span>
@@ -130,4 +136,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
   userLogin,
+  sendNotifi,
 })(Login);

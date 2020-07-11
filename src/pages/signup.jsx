@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { createNewUser } from "../store/actions/init";
+import { createNewUser, sendNotifi } from "../store/actions/init";
 const SignupWapper = styled.div`
   height: 100%;
   display: flex;
@@ -86,11 +86,19 @@ class Signup extends React.Component {
     };
 
     const { firstname, lastname, email, password, repassword } = this.state;
+    if (password.length < 8) {
+      this.props.sendNotifi(
+        false,
+        "Password Length Is Short At List 8 Character"
+      );
+    }
+
     if (
       firstname !== "" &&
       lastname !== "" &&
       email !== "" &&
       password !== "" &&
+      password.length >= 8 &&
       repassword !== "" &&
       password === repassword
     ) {
@@ -98,8 +106,69 @@ class Signup extends React.Component {
       this.setState({
         ...resetform,
       });
-    } else {
-      console.log("error");
+    } else if (
+      firstname === "" &&
+      lastname !== "" &&
+      email !== "" &&
+      password !== "" &&
+      repassword !== "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "Firstname filed Is Empty");
+    } else if (
+      firstname !== "" &&
+      lastname === "" &&
+      email !== "" &&
+      password !== "" &&
+      repassword !== "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "Lastname filed Is Empty");
+    } else if (
+      firstname !== "" &&
+      lastname !== "" &&
+      email === "" &&
+      password !== "" &&
+      repassword !== "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "Email filed Is Empty");
+    } else if (
+      firstname !== "" &&
+      lastname !== "" &&
+      email !== "" &&
+      password === "" &&
+      repassword !== "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "Password filed Is Empty");
+    } else if (
+      firstname !== "" &&
+      lastname !== "" &&
+      email !== "" &&
+      password !== "" &&
+      repassword === "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "Re-Password filed Is Empty");
+    } else if (
+      firstname !== "" &&
+      lastname !== "" &&
+      email !== "" &&
+      password !== "" &&
+      repassword !== "" &&
+      password !== repassword
+    ) {
+      this.props.sendNotifi(false, "Re-Password filed Is Empty");
+    } else if (
+      firstname === "" &&
+      lastname === "" &&
+      email !== "" &&
+      password === "" &&
+      repassword === "" &&
+      password === repassword
+    ) {
+      this.props.sendNotifi(false, "All fileds Is Empty");
     }
   };
   inputHandler = (e) => {
@@ -148,6 +217,7 @@ class Signup extends React.Component {
               placeholder="Enter you'r Email"
               onChange={this.inputHandler}
               value={email}
+              required
             />
           </div>
           <div>
@@ -188,4 +258,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
   createNewUser,
+  sendNotifi,
 })(Signup);

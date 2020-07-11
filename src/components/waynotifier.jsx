@@ -5,9 +5,11 @@ import {
   clearTheNotifiSuccess,
   clearTheNotifiError,
 } from "../store/actions/init";
+
+import check from "../svg/check.svg";
+import into from "../svg/into.svg";
 const MsgWapper = styled.div`
   font-size: 1.5rem;
-  padding: 1rem;
   background-color: ${(props) => (props.color ? "#75e475" : "#f87889")};
   border-radius: 20px;
   margin: 1rem 0;
@@ -17,6 +19,10 @@ const MsgWapper = styled.div`
   bottom: 11rem;
   right: 10px;
   text-align: center;
+  & > img {
+    height: 1.5rem;
+    margin: 0 5px 0 0;
+  }
 `;
 const List = ({ msg, type, mathod }) => {
   useEffect(() => {
@@ -26,7 +32,14 @@ const List = ({ msg, type, mathod }) => {
   }, [mathod]);
   return (
     <>
-      <MsgWapper color={type === "error" ? false : true}>{msg}</MsgWapper>
+      <MsgWapper color={type === "error" ? false : true}>
+        {type === "error" ? (
+          <img src={into} alt="intoo" />
+        ) : (
+          <img src={check} alt="check" />
+        )}
+        {msg}
+      </MsgWapper>
     </>
   );
 };
