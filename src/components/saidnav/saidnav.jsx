@@ -11,12 +11,17 @@ const SaidnavWapper = styled.div`
     position: sticky;
     z-index: 20;
   }
+
   & > div {
     height: 100vh;
     text-align: center;
     position: sticky;
     top: 0;
-
+    & > span {
+      @media ${(props) => props.theme.mediaQuires.lapLarg} {
+        display: none;
+      }
+    }
     @media ${(props) => props.theme.mediaQuires.lapLarg} {
       height: 10vh;
       background-color: var(--WhiteColor);
@@ -44,6 +49,9 @@ const Saidnav = () => {
           <img src={Logo} alt="Logo" />
         </ImageWapper>
         <NavLinks />
+        <span>Copyright &copy; 2020 SayHi</span>
+        <br />
+        <span> All rights reserved</span>
       </div>
     </SaidnavWapper>
   );

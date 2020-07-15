@@ -66,6 +66,9 @@ export const createNewUser = (data) => (
       dispatch({ type: "NTFY_ERROR_MSG", payload: error.message });
     });
 };
+export const cleartAc = () => {
+  return { type: "CLEAR_THE_POPUP" };
+};
 export const UserLogout = () => (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
   firebase

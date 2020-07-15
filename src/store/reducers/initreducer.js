@@ -1,24 +1,26 @@
-const initState = { name: "" };
+const initState = { name: "", profile: "", tAc: false };
 const InitReducer = (state = initState, action) => {
   switch (action.type) {
     case "LOGIN_SUC":
-      console.log("login Suc");
       return { ...state };
     case "LOGIN_ERR":
-      console.log("login error" + action.payload);
       return { ...state };
     case "SIGNOUT_SUC":
-      console.log("signout");
+      return { ...state };
+
+    case "CLEAR_THE_POPUP":
+      state.tAc = false;
       return { ...state };
     case "CREATE_USE_SUC":
+      state.tAc = true;
       return { ...state };
     case "CREATE_USE_ERR":
-      console.log(action.payload);
       return { ...state };
     case "GET_NAME":
+      state.name = action.payload.name;
+      state.profile = action.payload.profile;
       return {
-        name: action.payload.name,
-        profile: action.payload.profile,
+        ...state,
       };
 
     default:

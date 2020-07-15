@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Saidnav from "./components/saidnav/saidnav";
 import MaincontentWapper from "./components/mainContent/maincontentWapper";
 import WayNotifier from "./components/waynotifier";
+import Popup from "./components/popup";
 import styled from "styled-components";
 import { Route } from "react-router-dom";
 
@@ -14,7 +15,9 @@ import Post from "./pages/post";
 import editprofile from "./pages/editprofile";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-import { intiPresence } from "./store/actions/init";
+import Friendlist from "./pages/friendlist";
+
+import { intiPresence, cleartAc } from "./store/actions/init";
 import { connect } from "react-redux";
 const AppWapper = styled.div`
   display: grid;
@@ -35,13 +38,14 @@ const allRountes = [
   { path: "/post/:id", component: Post },
   { path: "/login", component: Login },
   { path: "/Signup", component: Signup },
+  { path: "/findfriends", component: Friendlist },
 ];
 function useIntifbState(mathod) {
   useEffect(() => {
     mathod();
   }, [mathod]);
 }
-function App({ intiPresence }) {
+function App({ intiPresence, tAc, cleartAc }) {
   useIntifbState(intiPresence);
   return (
     <>
@@ -54,10 +58,16 @@ function App({ intiPresence }) {
         </MaincontentWapper>
       </AppWapper>
       <WayNotifier />
+      {tAc ? <Popup cleartAc={cleartAc} /> : null}
     </>
   );
 }
-
-export default connect(null, {
+const mapStateToProps = (state) => {
+  return {
+    tAc: state.init.tAc,
+  };
+};
+export default connect(mapStateToProps, {
   intiPresence,
+  cleartAc,
 })(App);
