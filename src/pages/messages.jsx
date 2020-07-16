@@ -120,7 +120,8 @@ function useTheUsercome(user, mathod, uid, cleanup) {
     if (user) {
       const mainuser = user.filter((data) => data.userid === uid);
       mainuser.forEach((ele, i) => {
-        ele.followers.forEach((data) => {
+        let followersandfolloing = [...ele.followers, ...ele.following];
+        followersandfolloing.forEach((data) => {
           mathod(data);
         });
       });

@@ -16,6 +16,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import { followAuser, getfullUserdata } from "../store/actions/init";
+
 import Loading from "../components/loading";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
@@ -71,6 +72,7 @@ const UserPostWapper = styled.div`
 `;
 function useGetUserData(uid, mathod) {
   useEffect(() => {
+    console.log("4594598");
     uid && mathod(uid);
   }, [uid, mathod]);
 }
@@ -79,6 +81,7 @@ const Profile = ({
   userfirebase,
   user,
   match,
+  history,
   followAuser,
   getfullUserdata,
 }) => {
@@ -90,10 +93,8 @@ const Profile = ({
   }
   if (user && posts) {
     let username = user.firstname + " " + user.lastname;
-    let bio = user.bio;
-    let followers = user.followers;
     let loginuserFollowOrNot = user.followers.some((data) => data === loginuid);
-    let profile = user.profile;
+    let { bio, followers, profile, following } = user;
     return (
       <>
         <ProfileContentWapper>
@@ -114,21 +115,24 @@ const Profile = ({
                     Edit you'r Profile
                   </LinkWapper>
                   <ButtonWapper>Followers {followers.length}</ButtonWapper>
+                  <ButtonWapper>Following {following.length}</ButtonWapper>
                 </>
               ) : (
                 <>
                   <ButtonWapper
-                    onClick={() =>
+                    onClick={() => {
+                      getfullUserdata(viewuserid);
                       followAuser(
                         match.params.id,
                         loginuid,
                         loginuserFollowOrNot
-                      )
-                    }
+                      );
+                    }}
                   >
                     {loginuserFollowOrNot ? "Unfollow" : "Follow"}
                   </ButtonWapper>
                   <ButtonWapper>Followers {followers.length}</ButtonWapper>
+                  <ButtonWapper>Following {following.length}</ButtonWapper>
                   {loginuserFollowOrNot && (
                     <LinkWapper to={`/messages/${viewuserid}`}>
                       Message

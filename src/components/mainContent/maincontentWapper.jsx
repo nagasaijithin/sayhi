@@ -33,9 +33,9 @@ const NavWapper = styled.div`
     align-items: center;
 
     & > a {
-      height: 100%;
+      height: 70%;
       & > .addfriend {
-        height: 70%;
+        height: 100%;
       }
     }
     & > .MLogo {

@@ -46,6 +46,7 @@ export const createNewUser = (data) => (
           lastsee: new Date(),
           chatlastsees: {},
           unreadmsg: [],
+          following: [],
         })
         .then(() => {
           return firebase
@@ -118,6 +119,16 @@ export const followAuser = (uid, followeduserid, cond) => (
       followers: cond
         ? firestore.FieldValue.arrayRemove(followeduserid)
         : firestore.FieldValue.arrayUnion(followeduserid),
+    })
+    .then(() => {
+      firestore
+        .collection("users")
+        .doc(followeduserid)
+        .update({
+          following: cond
+            ? firestore.FieldValue.arrayRemove(uid)
+            : firestore.FieldValue.arrayUnion(uid),
+        });
     });
 };
 // editing profile
@@ -435,4 +446,30 @@ export const clearTheNotifiError = () => (dispatch) => {
 export const sendNotifi = (type, msg) => (dispatch) => {
   const checkTheError = type ? "NTFY_SUCCESS_MSG" : "NTFY_ERROR_MSG";
   dispatch({ type: checkTheError, payload: msg });
+};
+
+export const getAllUsers = () => (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  const firestore = getFirestore();
+  const Users = [];
+  firestore
+    .collection("users")
+    .get()
+    .then((snapShot) => {
+      return snapShot.docs.forEach((data) => {
+        let currentID = data.id;
+        let appObj = { ...data.data(), id: currentID };
+        Users.push(appObj);
+      });
+    })
+    .then(() => {
+      console.log(Users);
+      dispatch({ type: "GET_ALL_USERS", payload: Users });
+    });
+};
+export const clearthefriends = () => (dispatch) => {
+  dispatch({ type: "CLEAR_THE_USERS" });
 };
