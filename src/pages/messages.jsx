@@ -17,6 +17,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Loading from "../components/loading";
 import history from "../history";
+import { Helmet } from "react-helmet";
 const MessageWapper = styled.div`
   display: flex;
   background: white;
@@ -181,6 +182,9 @@ const Messages = ({
     };
     return (
       <MessageWapper changeGrid={mSize}>
+        <Helmet>
+          <title>Messager - sayHi</title>
+        </Helmet>
         <div className="first-element">
           {friendslist.map((data, i) => {
             let unreadmsguserAreNot = unreadmsglist.some((doc) => {
@@ -272,10 +276,6 @@ const Messages = ({
           ) : (
             <StartingInbox>
               <h1>Wellcome To SayHi Messenger</h1>
-              <p>
-                find new friends and chat with them, we clear the all chat in
-                every 24hours
-              </p>
             </StartingInbox>
           )}
         </div>

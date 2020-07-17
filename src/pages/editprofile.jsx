@@ -5,6 +5,7 @@ import { MainButton } from "../style/ui/components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { editeProfile, sendNotifi } from "../store/actions/init";
+import { Helmet } from "react-helmet";
 const ButtonOnSave = styled(MainButton)`
   padding: 1rem;
   border-radius: var(--mainborderRadius);
@@ -109,6 +110,9 @@ class Editprofile extends React.Component {
   render() {
     return (
       <ContentWapper onSubmit={this.formHandler}>
+        <Helmet>
+          <title>Edit you'r Profile - sayHi</title>
+        </Helmet>
         <label htmlFor="profile">
           <span>+</span>
         </label>

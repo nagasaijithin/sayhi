@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { userLogin, sendNotifi } from "../store/actions/init";
 import { Redirect } from "react-router-dom";
+import { Helmet } from "react-helmet";
+
 const LoginWapper = styled.div`
   height: 100vh;
   display: flex;
@@ -97,6 +99,9 @@ class Login extends React.Component {
     }
     return (
       <LoginWapper>
+        <Helmet>
+          <title>Login - sayHi</title>
+        </Helmet>
         <form onSubmit={this.loginSubmit}>
           <img src={Logo} alt="" />
           <div>

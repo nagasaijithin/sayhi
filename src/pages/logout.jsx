@@ -6,6 +6,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { UserLogout } from "../store/actions/init";
+import { Helmet } from "react-helmet";
 const LogoutWapper = styled.div`
   height: 90vh;
   display: flex;
@@ -28,6 +29,9 @@ const Logout = (props) => {
   }
   return (
     <LogoutWapper>
+      <Helmet>
+        <title>LogOut - sayHi</title>
+      </Helmet>
       <h1>Are you sure to Logout...?</h1>
       <div>
         <MainButton onClick={() => props.UserLogout()}>Yes</MainButton>

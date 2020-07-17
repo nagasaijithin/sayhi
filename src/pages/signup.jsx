@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { createNewUser, sendNotifi } from "../store/actions/init";
+import { Helmet } from "react-helmet";
 const SignupWapper = styled.div`
   height: 100%;
   display: flex;
@@ -184,6 +185,9 @@ class Signup extends React.Component {
     const { firstname, lastname, email, password, repassword } = this.state;
     return (
       <SignupWapper>
+        <Helmet>
+          <title>Signup - sayHi</title>
+        </Helmet>
         <form onSubmit={this.signupHandler}>
           <img src={Logo} alt="" />
           <div>

@@ -9,6 +9,7 @@ import {
   followAuser,
 } from "../store/actions/init";
 import Loading from "../components/loading";
+import { Helmet } from "react-helmet";
 const FriendlistWapper = styled.div`
   padding: 2rem;
   width: 80%;
@@ -56,6 +57,9 @@ const Friendlist = ({
 
     return (
       <FriendlistWapper>
+        <Helmet>
+          <title>FindFriends - sayHi</title>
+        </Helmet>
         <ul>
           {mainUsers.map((data) => {
             const fullName = data.firstname + " " + data.lastname;

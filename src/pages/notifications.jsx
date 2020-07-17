@@ -8,6 +8,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Loading from "../components/loading";
 import moment from "moment";
+import { Helmet } from "react-helmet";
 const ContentContiner = styled.div`
   display: flex;
   align-items: center;
@@ -36,6 +37,9 @@ const Notifications = ({ firebase, notifications }) => {
   if (notifications) {
     return (
       <NotificationsWapper>
+        <Helmet>
+          <title>Notifications - sayHi</title>
+        </Helmet>
         {notifications
           .filter((data) => data.useruid !== uid)
           .map((data, i) => {

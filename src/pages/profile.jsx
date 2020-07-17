@@ -16,7 +16,7 @@ import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import { followAuser, getfullUserdata } from "../store/actions/init";
-
+import { Helmet } from "react-helmet";
 import Loading from "../components/loading";
 const ButtonWapper = styled(MainButton)`
   padding: 0.5rem 2rem;
@@ -98,6 +98,9 @@ const Profile = ({
     return (
       <>
         <ProfileContentWapper>
+          <Helmet>
+            <title>{`${username}`} - sayHi</title>
+          </Helmet>
           <div className="userinfo">
             <ImageWapper>
               {profile === "false" ? (

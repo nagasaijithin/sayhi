@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { intiPresence } from "../store/actions/init";
+import { Helmet } from "react-helmet";
 function useIntifbState(mathod) {
   useEffect(() => {
     mathod();
@@ -26,6 +27,9 @@ const Home = ({ firebase, posts, intiPresence }) => {
   if (posts) {
     return (
       <CardsWapper>
+        <Helmet>
+          <title>Home - sayHi</title>
+        </Helmet>
         <CardContiner>
           <Createapost />
           {posts.map((data, i) => {

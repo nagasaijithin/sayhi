@@ -15,6 +15,7 @@ import { firestoreConnect } from "react-redux-firebase";
 import { addPostComment, liketheComment } from "../store/actions/posts";
 import { getusername, sendNotifi } from "../store/actions/init";
 import Loading from "../components/loading";
+import { Helmet } from "react-helmet";
 const CommentWapper = styled.div`
   margin: 2rem;
   & > p {
@@ -63,6 +64,9 @@ const Post = ({
     };
     return (
       <CardsWapper>
+        <Helmet>
+          <title>Post - sayHi</title>
+        </Helmet>
         <CardContiner>
           {posts.map((post, i) => {
             return post.image === "false" ? (
