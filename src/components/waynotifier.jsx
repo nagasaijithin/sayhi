@@ -19,6 +19,9 @@ const MsgWapper = styled.div`
   bottom: 11rem;
   right: 10px;
   text-align: center;
+  @media ${(props) => props.theme.mediaQuires.lapMid} {
+    width: 50vw;
+  }
   & > img {
     height: 1.5rem;
     margin: 0 5px 0 0;
