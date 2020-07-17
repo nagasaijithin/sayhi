@@ -47,7 +47,6 @@ function useIntifbState(mathod) {
 }
 function App({ intiPresence, tAc, cleartAc }) {
   useIntifbState(intiPresence);
-  console.log(process.env.REACT_APP_FIREBASE_APP_APIKEY);
   return (
     <>
       <AppWapper>

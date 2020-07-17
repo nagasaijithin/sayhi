@@ -329,7 +329,6 @@ export const getfullUserdata = (uid) => (
 ) => {
   const firestore = getFirestore();
   const firebase = getFirebase();
-  console.log(firebase);
   firestore
     .collection("users")
     .doc(uid)
@@ -466,7 +465,6 @@ export const getAllUsers = () => (
       });
     })
     .then(() => {
-      console.log(Users);
       dispatch({ type: "GET_ALL_USERS", payload: Users });
     });
 };

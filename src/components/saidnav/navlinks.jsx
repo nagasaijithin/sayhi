@@ -105,7 +105,12 @@ const NavLinks = ({
 }) => {
   const uid = loginuserInfo.auth.uid;
 
-  if (userList && userList.length >= 1 && notifications) {
+  if (
+    userList &&
+    userList.length >= 1 &&
+    notifications &&
+    notifications.length >= 1
+  ) {
     const user = userList[0];
     const Notging = () => {};
     const setNotificationTime = () => {
