@@ -72,7 +72,6 @@ const UserPostWapper = styled.div`
 `;
 function useGetUserData(uid, mathod) {
   useEffect(() => {
-    console.log("4594598");
     uid && mathod(uid);
   }, [uid, mathod]);
 }

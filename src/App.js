@@ -5,7 +5,7 @@ import WayNotifier from "./components/waynotifier";
 import Popup from "./components/popup";
 import styled from "styled-components";
 import { Route } from "react-router-dom";
-
+import history from "./history";
 import Home from "./pages/home";
 import Profile from "./pages/profile";
 import Notifications from "./pages/notifications";
@@ -45,6 +45,11 @@ function useIntifbState(mathod) {
     mathod();
   }, [mathod]);
 }
+
+history.listen((location, action) => {
+  window.scrollTo(0, 0);
+});
+
 function App({ intiPresence, tAc, cleartAc }) {
   useIntifbState(intiPresence);
   return (
