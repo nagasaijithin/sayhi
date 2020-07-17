@@ -4,13 +4,13 @@ import "firebase/firestore";
 import "firebase/storage";
 import "firebase/database";
 const firebaseConfig = {
-  apiKey: "AIzaSyDUIt21G4XrkuRW7_93pla40whyU_nk3kQ",
-  authDomain: "sayhi-dev-5fc85.firebaseapp.com",
-  databaseURL: "https://sayhi-dev-5fc85.firebaseio.com",
-  projectId: "sayhi-dev-5fc85",
-  storageBucket: "sayhi-dev-5fc85.appspot.com",
-  messagingSenderId: "819392958611",
-  appId: "1:819392958611:web:30786c3f6ceced676fbd66",
+  apiKey: process.env.REACT_APP_FIREBASE_APP_APIKEY,
+  authDomain: process.env.REACT_APP_FIREBASE_APP_AUTHDOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_APP_DATABASEURL,
+  projectId: process.env.REACT_APP_FIREBASE_APP_PROJECTID,
+  storageBucket: process.env.REACT_APP_FIREBASE_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_APP_MESSAGINGSENDRID,
+  appId: process.env.REACT_APP_FIREBASE_APP_APPID,
 };
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
