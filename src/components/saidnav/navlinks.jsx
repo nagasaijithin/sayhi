@@ -104,6 +104,45 @@ const NavLinks = ({
   userList,
 }) => {
   const uid = loginuserInfo.auth.uid;
+  const Notging = () => {};
+  const setNotificationTime = () => {
+    addnotificationtime();
+  };
+  const Loginlinks = [
+    { icon: home, title: "Home", path: "/", method: Notging },
+    {
+      icon: person,
+      title: "Profile",
+      path: `/profile/${uid}`,
+      method: Notging,
+    },
+    {
+      icon: notification,
+      title: "Notifications",
+      path: "/notifications",
+      method: setNotificationTime,
+      unreadicon: true,
+    },
+    {
+      icon: message,
+      title: "Message",
+      path: "/messages",
+      method: Notging,
+      unreadicon: true,
+    },
+    { icon: logout, title: "Logout", path: "/logout", method: Notging },
+  ];
+
+  const NotloginLinks = [
+    { icon: login, title: "Login", path: "/login", method: Notging },
+    {
+      icon: createaccount,
+      title: "Signup",
+      path: "/signup",
+      method: Notging,
+    },
+  ];
+  const Links = uid ? Loginlinks : NotloginLinks;
 
   if (
     userList &&
@@ -112,45 +151,6 @@ const NavLinks = ({
     notifications.length >= 1
   ) {
     const user = userList[0];
-    const Notging = () => {};
-    const setNotificationTime = () => {
-      addnotificationtime();
-    };
-    const Loginlinks = [
-      { icon: home, title: "Home", path: "/", method: Notging },
-      {
-        icon: person,
-        title: "Profile",
-        path: `/profile/${uid}`,
-        method: Notging,
-      },
-      {
-        icon: notification,
-        title: "Notifications",
-        path: "/notifications",
-        method: setNotificationTime,
-        unreadicon: true,
-      },
-      {
-        icon: message,
-        title: "Message",
-        path: "/messages",
-        method: Notging,
-        unreadicon: true,
-      },
-      { icon: logout, title: "Logout", path: "/logout", method: Notging },
-    ];
-
-    const NotloginLinks = [
-      { icon: login, title: "Login", path: "/login", method: Notging },
-      {
-        icon: createaccount,
-        title: "Signup",
-        path: "/signup",
-        method: Notging,
-      },
-    ];
-    const Links = uid ? Loginlinks : NotloginLinks;
 
     const userLastSee = moment(user.noticationtime.toDate())
       .utc()
@@ -176,15 +176,6 @@ const NavLinks = ({
                   <img src={icon} alt={title} />
                   <LinkName>{title}</LinkName>
                 </Link>
-
-                {title === "Notifications" &&
-                unreadicon &&
-                userseeNotifiorNot ? (
-                  <div></div>
-                ) : null}
-                {title === "Message" && unreadicon && unreadmsgs > 0 ? (
-                  <div></div>
-                ) : null}
               </li>
             ))}
           </ul>
@@ -192,7 +183,22 @@ const NavLinks = ({
       </>
     );
   } else {
-    return null;
+    return (
+      <>
+        <MainLinksWapper>
+          <ul>
+            {Links.map(({ icon, title, path, method, unreadicon }, i) => (
+              <li key={i} onClick={method}>
+                <Link to={path}>
+                  <img src={icon} alt={title} />
+                  <LinkName>{title}</LinkName>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </MainLinksWapper>
+      </>
+    );
   }
 };
 const mapStateToProps = (state) => {
